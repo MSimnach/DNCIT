@@ -2,7 +2,7 @@
 % Please edit documentation in R/DNCIT.R
 \name{DNCIT}
 \alias{DNCIT}
-\title{Title}
+\title{Deep nonparametric Conditional Independence Test (DNCIT)}
 \usage{
 DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list())
 }
@@ -23,12 +23,12 @@ DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list())
 p-value and test statistic as vector
 }
 \description{
-Title
+Deep nonparametric Conditional Independence Test (DNCIT)
 }
 \examples{
 n <- 100; p <- 10; q <- 2
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
-Y <- rnorm(n)
+Y <- matrix(rnorm(n), nrow = n)
 Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 res <- DNCIT(X, Y, Z)
 }
