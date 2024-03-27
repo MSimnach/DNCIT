@@ -1,13 +1,13 @@
 Package: DNCIT
-Title: Conditional independence test for images
+Title: Deep Nonparametric Conditional Independence Test for Images
 Version: 0.0.0.9000
 Authors@R: 
     person("Marco", "Simnacher", , "marco.simnacher@hu-berlin.de", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Deep nonparametric conditional independence test (DNCIT) for images. The package provides a 
-            deep learning based CIT for images. The test is based on a given embedding map of the image and 
-            applies existing nonparametric CITs to the feature representation and a scalar, given vector-valued
-            confounders. 
+Description: Deep Nonparametric Conditional Independence Test (DNCIT) for Images,
+            based on a user-given embedding map of the image and the application of
+            existing nonparametric CITs to the feature representation 
+            of the image and a scalar, given vector-valued confounders. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
