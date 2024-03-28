@@ -2,8 +2,7 @@ Package: DNCIT
 Title: Deep Nonparametric Conditional Independence Test for Images
 Version: 0.0.0.9000
 Authors@R: 
-    person("Marco", "Simnacher", , "marco.simnacher@hu-berlin.de", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Marco", "Simnacher", email="marco.simnacher@hu-berlin.de", role = c("aut", "cre"))
 Description: Deep Nonparametric Conditional Independence Test (DNCIT) for Images,
             based on a user-given embedding map of the image and the application of
             existing nonparametric CITs to the feature representation 
@@ -15,11 +14,10 @@ RoxygenNote: 7.3.1
 URL: https://github.com/MSimnach/DNCIT
 BugReports: https://github.com/MSimnach/DNCIT/issues
 Imports: 
+    momentchi2,
     RCIT (>= 0.1.0)
 Remotes: 
     ericstrobl/RCIT
-Depends: 
-    momentchi2
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

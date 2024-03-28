@@ -9,9 +9,12 @@
 #' @param params_CIT A list of parameters for the nonparametric CIT
 #'
 #' @return p-value and test statistic as vector
+#' @importFrom RCIT RCoT
+#' @importFrom momentchi2 hbe
 #' @export
 #'
 #' @examples
+#' library(momentchi2)
 #' n <- 100; p <- 10; q <- 2
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)

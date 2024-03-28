@@ -26,6 +26,7 @@ p-value and test statistic as vector
 Deep nonparametric Conditional Independence Test (DNCIT)
 }
 \examples{
+library(momentchi2)
 n <- 100; p <- 10; q <- 2
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 Y <- matrix(rnorm(n), nrow = n)
