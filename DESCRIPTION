@@ -18,6 +18,7 @@ Imports:
     KPC,
     mgcv,
     RCIT (>= 0.1.0),
+    reticulate,
     stats,
     withr
 Remotes: 
