@@ -1,4 +1,4 @@
-test_that("DNCIT applicable to univariate Gaussian CI X,Y,Z", {
+test_that("DNCIT applicable to univariate X,Y,Z", {
   n <- 100; p <- 1; q <- 1
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
