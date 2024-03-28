@@ -36,6 +36,24 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
     res <- RCIT::RCoT(X, Y, Z)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='kpc_graph'){
+    if (params_CIT[[1]]=='1'){
+      k = kernlab::vanilladot()
+    }else if (params_CIT[[1]]=='2') {
+      k = kernlab::rbfdot(1/(2*stats::median(stats::dist(X))^2))
+    }else if (params_CIT[[1]]=='3') {
+      k = kernlab::laplacedot(1/(2*stats::median(stats::dist(X))^2))
+    }else if (params_CIT[[1]]=='4') {
+      k = kernlab::tanhdot()
+    }else if (params_CIT[[1]]=='5') {
+      k = kernlab::splinedot()
+    }else if (params_CIT[[1]]=='6') {
+      k = kernlab::besseldot(sigma=1/(2*stats::median(stats::dist(X))^2))
+    }
+    start_time <- timestamp()
+    resu <- kpc_graph(X,Y,Z, k=k, Knn=as.numeric(params_CIT[[2]]), model.formula.YZ=params_CIT[[3]])
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
