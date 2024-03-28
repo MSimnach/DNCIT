@@ -4,7 +4,7 @@ test_that("DNCIT applicable to univariate X,Y,Z", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z)$p < 1)
+  expect_true(DNCIT(X, Y, Z)$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
 })
 
 test_that("DNCIT applicable to multivariate X, univariate Y,Z", {
@@ -13,7 +13,7 @@ test_that("DNCIT applicable to multivariate X, univariate Y,Z", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z)$p < 1)
+  expect_true(DNCIT(X, Y, Z)$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
 })
 
 test_that("DNCIT applicable to multivariate X,Z, univariate Y", {
@@ -22,5 +22,5 @@ test_that("DNCIT applicable to multivariate X,Z, univariate Y", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z)$p < 1)
+  expect_true(DNCIT(X, Y, Z)$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
 })
