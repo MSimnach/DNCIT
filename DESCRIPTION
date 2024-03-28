@@ -14,7 +14,8 @@ RoxygenNote: 7.3.1
 URL: https://github.com/MSimnach/DNCIT
 BugReports: https://github.com/MSimnach/DNCIT/issues
 Imports: 
-    RCIT (>= 0.1.0)
+    RCIT (>= 0.1.0),
+    withr
 Remotes: 
     ericstrobl/RCIT
 Suggests: 

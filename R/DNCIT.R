@@ -32,18 +32,18 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
   }
   ## nonparametric CIT
   if (cit == "RCOT") {
-    #start_time <- timestamp()
+    start_time <- timestamp()
     res <- RCIT::RCoT(X, Y, Z)
-    #end_time <- timestamp()
-    #res$runtime <- difftime(end_time, start_time, units = "secs")
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
 
-# timestamp <- function(time = Sys.time()) {
-#   withr::local_locale(c("LC_TIME" = "C"))
-#   withr::local_timezone("UTC")
-#   return(format(time, "%Y-%B-%d_%H-%M-%S"))
-# }
+timestamp <- function(time = Sys.time()) {
+ withr::local_locale(c("LC_TIME" = "C"))
+ withr::local_timezone("UTC")
+ return(time)
+}
 
 

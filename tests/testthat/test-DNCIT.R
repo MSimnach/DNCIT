@@ -24,3 +24,13 @@ test_that("DNCIT applicable to multivariate X,Z, univariate Y", {
 
   expect_true(DNCIT(X, Y, Z)$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
 })
+
+test_that("timestamp() difference is correct", {
+  withr::local_locale(c("LC_TIME" = "C"))
+  withr::local_timezone("UTC")
+  start.time <- Sys.time()
+  start.time.timestamp <- timestamp()
+  end.time <- Sys.time()
+  end.time.timestamp <- timestamp()
+  expect_equal(end.time.timestamp - start.time.timestamp, end.time - start.time, tolerance = 1e-3)
+})
