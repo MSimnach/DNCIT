@@ -12,7 +12,7 @@
 #' @param model.formula.YZ A formula for the generalized additive model approximating the conditional distribution of Y given Z
 #' @param M Number of conditional permutations
 #' @param nstep Parameter inside MCMC to generate conditional permutations
-
+#'
 #' @return list of p-value and kernel partial correlation for observed X,Y,Z
 #' @export
 #'

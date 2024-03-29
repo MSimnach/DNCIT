@@ -59,6 +59,11 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
     res <- cmiknn(np$array(X), np$array(Y), np$array(Z))
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='fcit'){
+    start_time <- timestamp()
+    res <- r.fcit(np$array(X), np$array(Y), np$array(Z))
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
