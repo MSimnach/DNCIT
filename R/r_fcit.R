@@ -12,8 +12,8 @@
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-#' r.fcit(X,Y,Z)
-r.fcit <- function(X,Y,Z){
+#' r_fcit(X,Y,Z)
+r_fcit <- function(X,Y,Z){
   res <- list()
   res$p <- fcit$fcit$test(X, Y, Z)
   res$Stat <- -1

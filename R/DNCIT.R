@@ -23,6 +23,8 @@
 #' @return list of p-value, test statistic and runtime
 #' @importFrom RCIT RCoT
 #' @importFrom momentchi2 hbe
+#' @importFrom GeneralisedCovarianceMeasure gcm.test
+#' @importFrom utils modifyList
 #' @export
 #'
 #' @examples
@@ -65,14 +67,14 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='fcit'){
     start_time <- timestamp()
-    res <- r.fcit(np$array(X), np$array(Y), np$array(Z))
+    res <- r_fcit(np$array(X), np$array(Y), np$array(Z))
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='gcm'){
     updated_parameters <- update_params(gcm.test, X,Y,Z, params_cit)
 
     start_time <- timestamp()
-    res <- do.call(gcm.test, updated_parameters)
+    res <- do.call(GeneralisedCovarianceMeasure::gcm.test, updated_parameters)
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
@@ -104,7 +106,7 @@ update_params <- function(cit.fct, X,Y,Z, params_cit=list()){
     }
   }
 
-  updated_parameters <- modifyList(default_parameters, valid_new_parameters)
+  updated_parameters <- utils::modifyList(default_parameters, valid_new_parameters)
   updated_parameters$X <- X
   updated_parameters$Y <- Y
   updated_parameters$Z <- Z

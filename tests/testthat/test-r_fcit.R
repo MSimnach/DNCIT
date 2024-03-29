@@ -3,7 +3,7 @@ test_that("fcit applicable to univariate X,Y,Z", {
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-  res <- r.fcit(X,Y,Z)
+  res <- r_fcit(X,Y,Z)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 length(res) == 2)
 })
@@ -13,7 +13,7 @@ test_that("cpt-kpc applicable to multivariate X, univariate Y,Z", {
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-  res <- r.fcit(X,Y,Z)
+  res <- r_fcit(X,Y,Z)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 length(res) == 2)
 })
@@ -23,7 +23,7 @@ test_that("cpt-kpc applicable to multivariate X,Z, univariate Y", {
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-  res <- r.fcit(X,Y,Z)
+  res <- r_fcit(X,Y,Z)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 length(res) == 2)
 })

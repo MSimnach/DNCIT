@@ -4,7 +4,7 @@
 \alias{DNCIT}
 \title{Conditional Independence Test for images and scalars, given vector-valued confounders}
 \usage{
-DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list())
+DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list())
 }
 \arguments{
 \item{X}{A nxp-matrix of n p-dimensional (vectorized) images or a feature representation of the images}

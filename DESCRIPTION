@@ -14,12 +14,14 @@ RoxygenNote: 7.3.1
 URL: https://github.com/MSimnach/DNCIT
 BugReports: https://github.com/MSimnach/DNCIT/issues
 Imports: 
+    GeneralisedCovarianceMeasure,
     kernlab,
     KPC,
     mgcv,
     RCIT (>= 0.1.0),
     reticulate,
     stats,
+    utils,
     withr
 Remotes: 
     ericstrobl/RCIT
