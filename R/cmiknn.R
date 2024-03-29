@@ -21,7 +21,7 @@
 #' cmiknn(X, Y, Z)
 cmiknn <- function(X,Y,Z, knn=0.15, shuffle_neighbors=5, sig_samples=500, transform="ranks") {
   if(!('tigramite' %in% reticulate::py_list_packages()$'package')){
-    stop('The reticulate environment that you use does not have the tigramite package installed. Please install it first in this environment. Best practice is to load the DNCIT package by library(DNCIT) and afterwards specify a virtualenv for reticulate with all necessary CITs that you want to use in it. Then, activate the virtualenv with reticulate::use_virtualenv("name_of_virtualenv") and run e.g. DNCIT(X,Y,Z,cit="cmiknn")).')
+    stop('The reticulate environment that you use does not have the tigramite package installed. Please install it first in the environment accessed by reticulate.')
   }
 
   if(knn<1){

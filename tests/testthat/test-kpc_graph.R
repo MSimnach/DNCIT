@@ -7,8 +7,7 @@ test_that("cpt-kpc applicable to univariate X,Y,Z", {
                   kernlab::laplacedot(1/(2*stats::median(stats::dist(X))^2)))){
     for(knn in c(1,2)){
       kpc_params <- list(kernel, knn, 'V1~V2')
-      res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
-                       model.formula.YZ=kpc_params[[3]])
+      res <- kpc_graph(X, Y, Z, kpc_params[[1]], kpc_params[[2]], kpc_params[[3]])
       expect_true(res$p >= 0 && res$p <= 1 &&
                     length(res) == 2)
     }
@@ -24,8 +23,7 @@ test_that("cpt-kpc applicable to multivariate X, univariate Y,Z", {
                   kernlab::laplacedot(1/(2*stats::median(stats::dist(X))^2)))){
     for(knn in c(1,2)){
       kpc_params <- list(kernel, knn, 'V1~V2')
-      res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
-                       model.formula.YZ=kpc_params[[3]])
+      res <- kpc_graph(X, Y, Z, kpc_params[[1]], kpc_params[[2]], kpc_params[[3]])
       expect_true(res$p >= 0 && res$p <= 1 &&
                     length(res) == 2)
     }
@@ -41,8 +39,7 @@ test_that("cpt-kpc applicable to multivariate X,Z, univariate Y", {
                   kernlab::laplacedot(1/(2*stats::median(stats::dist(X))^2)))){
     for(knn in c(1,2)){
       kpc_params <- list(kernel, knn, 'V1~V2')
-      res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
-                       model.formula.YZ=kpc_params[[3]])
+      res <- kpc_graph(X, Y, Z, kpc_params[[1]], kpc_params[[2]], kpc_params[[3]])
       expect_true(res$p >= 0 && res$p <= 1 &&
                     length(res) == 2)
     }

@@ -32,7 +32,7 @@
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' res <- DNCIT(X, Y, Z)
-DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list()) {
+DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list()) {
   if (!(is.matrix(X) && is.matrix(Y) && is.matrix(Z))) {
     return("Please input variables as matrices")
   }
@@ -42,6 +42,7 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
   } else {
     X <- embedding_map(X)
   }
+
   ## nonparametric CIT
   if (cit == "RCOT") {
     start_time <- timestamp()
@@ -49,19 +50,30 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='kpc_graph'){
-    k <- params_CIT[[1]]
+    updated_parameters <- update_params(kpc_graph, X,Y,Z, params_cit)
+
     start_time <- timestamp()
-    resu <- kpc_graph(X,Y,Z, k=k, Knn=as.numeric(params_CIT[[2]]), model.formula.YZ=params_CIT[[3]])
+    resu <- kpc_graph(X,Y,Z, k=params_cit[[1]], Knn=as.numeric(params_cit[[2]]), model.formula.YZ=params_CIT[[3]])
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cmiknn'){
+    updated_parameters <- update_params(cmiknn, X,Y,Z, params_cit)
+
     start_time <- timestamp()
-    res <- cmiknn(np$array(X), np$array(Y), np$array(Z))
+    res <- do.call(cmiknn, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='fcit'){
     start_time <- timestamp()
     res <- r.fcit(np$array(X), np$array(Y), np$array(Z))
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='gcm'){
+    updated_parameters <- update_params(gcm.test, X,Y,Z, params_cit)
+
+    start_time <- timestamp()
+    res <- do.call(gcm.test, updated_parameters)
+    res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }
@@ -72,6 +84,31 @@ timestamp <- function(time = Sys.time()) {
  withr::local_locale(c("LC_TIME" = "C"))
  withr::local_timezone("UTC")
  return(time)
+}
+
+#exchange default parameters
+update_params <- function(cit.fct, X,Y,Z, params_cit=list()){
+  default_parameters <- as.list(formals(cit.fct))
+
+  # Initialize a list to store valid new parameters
+  valid_new_parameters <- list()
+
+  # Iterate through new parameters, remove invalid ones, and print a warning
+  for (param_name in names(params_cit)) {
+    if (param_name %in% names(default_parameters)) {
+      # Valid parameter, add to the list of valid parameters
+      valid_new_parameters[[param_name]] <- params_cit[[param_name]]
+    } else {
+      # Invalid parameter, print a warning
+      warning(paste("Parameter", param_name, "is not a valid parameter of the", cit.fct, "function."))
+    }
+  }
+
+  updated_parameters <- modifyList(default_parameters, valid_new_parameters)
+  updated_parameters$X <- X
+  updated_parameters$Y <- Y
+  updated_parameters$Z <- Z
+  return(updated_parameters)
 }
 
 
