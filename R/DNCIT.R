@@ -18,7 +18,7 @@
 #' @param Z A q-dimensional vector-valued confounder (optional)
 #' @param embedding_map An embedding map computing feature representations from the images (optional)
 #' @param cit The CIT applied to the feature representations, Y and Z. Default is "RCOT"
-#' @param params_CIT A list of parameters for the CIT
+#' @param params_cit A list of parameters for the CIT
 #'
 #' @return list of p-value, test statistic and runtime
 #' @importFrom RCIT RCoT
@@ -55,7 +55,7 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list
     updated_parameters <- update_params(kpc_graph, X,Y,Z, params_cit)
 
     start_time <- timestamp()
-    resu <- kpc_graph(X,Y,Z, k=params_cit[[1]], Knn=as.numeric(params_cit[[2]]), model.formula.YZ=params_CIT[[3]])
+    resu <- kpc_graph(X,Y,Z, k=params_cit[[1]], Knn=as.numeric(params_cit[[2]]), model.formula.YZ=params_cit[[3]])
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cmiknn'){
@@ -78,6 +78,13 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='wald'){
+    updated_parameters <- update_params(wald, X,Y,Z, params_cit)
+
+    start_time <- timestamp()
+    res <- do.call(wald, updated_parameters)
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
@@ -89,17 +96,17 @@ timestamp <- function(time = Sys.time()) {
 }
 
 #exchange default parameters
-update_params <- function(cit.fct, X,Y,Z, params_cit=list()){
+update_params <- function(cit.fct, X,Y,Z, new_params=list()){
   default_parameters <- as.list(formals(cit.fct))
 
   # Initialize a list to store valid new parameters
   valid_new_parameters <- list()
 
   # Iterate through new parameters, remove invalid ones, and print a warning
-  for (param_name in names(params_cit)) {
+  for (param_name in names(new_params)) {
     if (param_name %in% names(default_parameters)) {
       # Valid parameter, add to the list of valid parameters
-      valid_new_parameters[[param_name]] <- params_cit[[param_name]]
+      valid_new_parameters[[param_name]] <- new_params[[param_name]]
     } else {
       # Invalid parameter, print a warning
       warning(paste("Parameter", param_name, "is not a valid parameter of the", cit.fct, "function."))

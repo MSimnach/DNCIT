@@ -19,10 +19,3 @@ list of p-value and -1 as test statistic, because the CIT does not return a test
 \description{
 Fast conditional independence test
 }
-\examples{
-n <- 20; p <- 10; q <- 2
-X <- matrix(rnorm(n*p), nrow = n, ncol = p)
-Y <- matrix(rnorm(n), nrow = n)
-Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-r.fcit(X,Y,Z)
-}

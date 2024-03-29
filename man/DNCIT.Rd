@@ -17,7 +17,7 @@ DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list())
 
 \item{cit}{The CIT applied to the feature representations, Y and Z. Default is "RCOT"}
 
-\item{params_CIT}{A list of parameters for the CIT}
+\item{params_cit}{A list of parameters for the CIT}
 }
 \value{
 list of p-value, test statistic and runtime
