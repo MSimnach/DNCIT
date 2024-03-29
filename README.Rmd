@@ -18,16 +18,18 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of DNCIT is to provide a package for the deep nonparametric conditional independence test (DNCIT) developed in the paper 'Deep Nonparametric Conditional Independence Tests for Images'. The CIT consists of a wrapper for potential embedding maps and a selection of existing nonparametric CITs. 
+The goal of DNCIT is to provide a package for the deep nonparametric conditional independence test (CIT) (DNCIT) developed in the paper 'Deep Nonparametric Conditional Independence Tests for Images'. The CIT consists of a wrapper for potential embedding maps and a selection of existing nonparametric CITs. 
 
 ## Installation
 
 You can install the development version of DNCIT from [GitHub](https://github.com/) with:
 
-``` r
+```{r}
 # install.packages("devtools")
 devtools::install_github("MSimnach/DNCIT")
 ```
+
+To run also CITs from python, the corresponding tests have to be in installend in a virtual environment. Therefore, a virtual environment for the python-based CITs is automatically created when loading the package for the first time, if there exists no virtual environment called ´r-cits´. The virtual environment is created with the following python packages: tigramite, scikit_learn. If you want to use other CITs, you can install them in the virtual environment with the following command:
 
 ## Example
 
