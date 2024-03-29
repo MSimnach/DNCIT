@@ -29,7 +29,8 @@ package for the first time, if there exists no virtual environment
 called ´r-cits´. The virtual environment is created with the following
 python packages: tigramite, scikit_learn. If you want to use other CITs,
 you can install them in the virtual environment with the following
-command:
+command: reticulate::py_install(packages = “package”, envname =
+‘r-cits’).
 
 ## Example
 
@@ -45,11 +46,11 @@ Y <- matrix(rnorm(n), nrow=n)
 Z_confounder <- matrix(rnorm(n*q),nrow=n,ncol=q)
 DNCIT(X_feature_representation,Y,Z_confounder)
 #> $p
-#> [1] 0.789155
+#> [1] 0.8458897
 #> 
 #> $Sta
-#> [1] 12.99851
+#> [1] 11.85217
 #> 
 #> $runtime
-#> Time difference of 0.09491205 secs
+#> Time difference of 0.09696698 secs
 ```
