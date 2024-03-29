@@ -24,7 +24,7 @@ The goal of DNCIT is to provide a package for the deep nonparametric conditional
 
 You can install the development version of DNCIT from [GitHub](https://github.com/) with:
 
-```{r}
+``` r
 # install.packages("devtools")
 devtools::install_github("MSimnach/DNCIT")
 ```
