@@ -4,7 +4,7 @@
 #' @param Y A nx1-matrix
 #' @param Z A nxq-matrix of n q-dimensional confounder (optional)
 #'
-#' @return list of p-value and -1 as test statistic, because the CIT does not return a test statistic
+#' @return list of p-value and -1 as test statistic, because the FCIT does not return a test statistic
 #' @export
 r_fcit <- function(X,Y,Z){
   res <- list()

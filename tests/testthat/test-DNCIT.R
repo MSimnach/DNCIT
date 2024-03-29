@@ -1,3 +1,7 @@
+test_that('are we here', {
+  expect_true(TRUE)
+})
+
 test_that("Deep-RCoT applicable to univariate X,Y,Z", {
   n <- 20; p <- 1; q <- 1
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)

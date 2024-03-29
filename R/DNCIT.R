@@ -78,13 +78,6 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
-  }else if(cit=='wald'){
-    updated_parameters <- update_params(wald, X,Y,Z, params_cit)
-
-    start_time <- timestamp()
-    res <- do.call(wald, updated_parameters)
-    end_time <- timestamp()
-    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
@@ -95,7 +88,6 @@ timestamp <- function(time = Sys.time()) {
  return(time)
 }
 
-#exchange default parameters
 update_params <- function(cit.fct, X,Y,Z, new_params=list()){
   default_parameters <- as.list(formals(cit.fct))
 

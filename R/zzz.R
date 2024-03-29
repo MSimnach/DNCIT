@@ -1,4 +1,4 @@
-#' @importFrom reticulate import use_virtualenv
+#' @importFrom reticulate import use_virtualenv virtualenv_exists py_install
 
 CMIknn <- NULL
 np <- NULL

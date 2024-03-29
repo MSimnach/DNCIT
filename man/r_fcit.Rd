@@ -14,7 +14,7 @@ r_fcit(X, Y, Z)
 \item{Z}{A nxq-matrix of n q-dimensional confounder (optional)}
 }
 \value{
-list of p-value and -1 as test statistic, because the CIT does not return a test statistic
+list of p-value and -1 as test statistic, because the FCIT does not return a test statistic
 }
 \description{
 Fast conditional independence test
