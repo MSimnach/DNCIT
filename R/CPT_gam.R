@@ -43,7 +43,7 @@ generate_X_CPT_MC = function(nstep,log_lik_mat,Pi_){
 }
 
 
-cpt_gam <- function(Y, Z, model.formula.YZ, alpha, M, nstep){
+cpt_gam <- function(Y, Z, model.formula.YZ, M, nstep){
   YZ <- cbind(Y,Z)
   #conditional mean and variance via gam for y_i|z_i
   colnames(YZ) <- paste('V', 1:ncol(YZ), sep='')

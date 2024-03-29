@@ -1,4 +1,4 @@
-test_that("Deep-CPT-KPC applicable to univariate X,Y,Z", {
+test_that("cpt-kpc applicable to univariate X,Y,Z", {
   n <- 20; p <- 1; q <- 1
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
@@ -9,12 +9,13 @@ test_that("Deep-CPT-KPC applicable to univariate X,Y,Z", {
       kpc_params <- list(kernel, knn, 'V1~V2')
       res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
                        model.formula.YZ=kpc_params[[3]])
-      expect_true(res >= 0 && res  <= 1)
+      expect_true(res$p >= 0 && res$p <= 1 &&
+                    length(res) == 2)
     }
   }
 })
 
-test_that("Deep-CPT-KPC applicable to multivariate X, univariate Y,Z", {
+test_that("cpt-kpc applicable to multivariate X, univariate Y,Z", {
   n <- 20; p <- 10; q <- 1
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
@@ -25,12 +26,13 @@ test_that("Deep-CPT-KPC applicable to multivariate X, univariate Y,Z", {
       kpc_params <- list(kernel, knn, 'V1~V2')
       res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
                        model.formula.YZ=kpc_params[[3]])
-      expect_true(res >= 0 && res  <= 1)
+      expect_true(res$p >= 0 && res$p <= 1 &&
+                    length(res) == 2)
     }
   }
 })
 
-test_that("Deep-CPT-KPC applicable to multivariate X,Z, univariate Y", {
+test_that("cpt-kpc applicable to multivariate X,Z, univariate Y", {
   n <- 20; p <- 10; q <- 2
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
@@ -41,7 +43,8 @@ test_that("Deep-CPT-KPC applicable to multivariate X,Z, univariate Y", {
       kpc_params <- list(kernel, knn, 'V1~V2')
       res <- kpc_graph(X, Y, Z, k=kpc_params[[1]], Knn = kpc_params[[2]],
                        model.formula.YZ=kpc_params[[3]])
-      expect_true(res >= 0 && res  <= 1)
+      expect_true(res$p >= 0 && res$p <= 1 &&
+                    length(res) == 2)
     }
   }
 })

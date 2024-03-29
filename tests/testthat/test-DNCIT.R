@@ -4,7 +4,10 @@ test_that("Deep-RCoT applicable to univariate X,Y,Z", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z, cit = "RCOT")$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
+  res <- DNCIT(X, Y, Z, cit = "RCOT")
+  expect_true(res$p >= 0 && res$p <= 1 &&
+                as.numeric(res$runtime) >= 0 &&
+                length(res) ==3)
 })
 
 test_that("Deep-RCoT applicable to multivariate X, univariate Y,Z", {
@@ -13,7 +16,10 @@ test_that("Deep-RCoT applicable to multivariate X, univariate Y,Z", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z, cit = "RCOT")$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
+  res <- DNCIT(X, Y, Z, cit = "RCOT")
+  expect_true(res$p >= 0 && res$p <= 1 &&
+                as.numeric(res$runtime) >= 0 &&
+                length(res) ==3)
 })
 
 test_that("Deep-RCoT applicable to multivariate X,Z, univariate Y", {
@@ -22,7 +28,10 @@ test_that("Deep-RCoT applicable to multivariate X,Z, univariate Y", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  expect_true(DNCIT(X, Y, Z, cit = "RCOT")$p >= 0 && DNCIT(X, Y, Z)$p <= 1)
+  res <- DNCIT(X, Y, Z, cit = "RCOT")
+  expect_true(res$p >= 0 && res$p <= 1 &&
+                as.numeric(res$runtime) >= 0 &&
+                length(res) ==3)
 })
 
 test_that("timestamp() difference is correct", {

@@ -2,28 +2,38 @@
 % Please edit documentation in R/DNCIT.R
 \name{DNCIT}
 \alias{DNCIT}
-\title{Deep nonparametric Conditional Independence Test (DNCIT)}
+\title{Conditional Independence Test for images and scalars, given vector-valued confounders}
 \usage{
 DNCIT(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list())
 }
 \arguments{
 \item{X}{A nxp-matrix of n p-dimensional (vectorized) images or a feature representation of the images}
 
-\item{Y}{A scalar}
+\item{Y}{A nx1-matrix of n univariate target variables}
 
 \item{Z}{A q-dimensional vector-valued confounder (optional)}
 
-\item{embedding_map}{A embedding map computing feature representations from the images (optional)}
+\item{embedding_map}{An embedding map computing feature representations from the images (optional)}
 
-\item{cit}{The nonparametric CIT applied to the feature representations, Y and Z. Default is "RCOT"}
+\item{cit}{The CIT applied to the feature representations, Y and Z. Default is "RCOT"}
 
-\item{params_CIT}{A list of parameters for the nonparametric CIT}
+\item{params_CIT}{A list of parameters for the CIT}
 }
 \value{
-p-value and test statistic as vector
+list of p-value, test statistic and runtime
 }
 \description{
-Deep nonparametric Conditional Independence Test (DNCIT)
+Deep nonparametric conditional Independence Test (CIT) (DNCIT) consisting of a wrapper for
+(nonparametric) CITs applied to feature representations of images and scalars, given confounders,
+and embedding maps applied to the images to obtain feature representations.
+}
+\details{
+The function allows you to specify an embedding map which maps the images onto feature representations.
+If no embedding map is specified, X should be a matrix of feature representations of the images.
+
+The function allows you to specify a CIT from a list of CITs. The default is the Randomized Correlation
+Test (RCOT) since it performed best in the paper. However, a recommendation based on the sample size
+and the feature representation dimension is given in the console before performing the CIT.
 }
 \examples{
 library(momentchi2)

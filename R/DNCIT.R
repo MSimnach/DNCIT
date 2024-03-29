@@ -1,14 +1,26 @@
 ### DNCIT
-#' Deep nonparametric Conditional Independence Test (DNCIT)
+#' Conditional Independence Test for images and scalars, given vector-valued confounders
+#'
+#' Deep nonparametric conditional Independence Test (CIT) (DNCIT) consisting of a wrapper for
+#' (nonparametric) CITs applied to feature representations of images and scalars, given confounders,
+#' and embedding maps applied to the images to obtain feature representations.
+#'
+#' The function allows you to specify an embedding map which maps the images onto feature representations.
+#' If no embedding map is specified, X should be a matrix of feature representations of the images.
+#'
+#' The function allows you to specify a CIT from a list of CITs. The default is the Randomized Correlation
+#' Test (RCOT) since it performed best in the paper. However, a recommendation based on the sample size
+#' and the feature representation dimension is given in the console before performing the CIT.
+#'
 #'
 #' @param X A nxp-matrix of n p-dimensional (vectorized) images or a feature representation of the images
-#' @param Y A scalar
+#' @param Y A nx1-matrix of n univariate target variables
 #' @param Z A q-dimensional vector-valued confounder (optional)
-#' @param embedding_map A embedding map computing feature representations from the images (optional)
-#' @param cit The nonparametric CIT applied to the feature representations, Y and Z. Default is "RCOT"
-#' @param params_CIT A list of parameters for the nonparametric CIT
+#' @param embedding_map An embedding map computing feature representations from the images (optional)
+#' @param cit The CIT applied to the feature representations, Y and Z. Default is "RCOT"
+#' @param params_CIT A list of parameters for the CIT
 #'
-#' @return p-value and test statistic as vector
+#' @return list of p-value, test statistic and runtime
 #' @importFrom RCIT RCoT
 #' @importFrom momentchi2 hbe
 #' @export
@@ -37,65 +49,16 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_CIT = list
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='kpc_graph'){
-    if (params_CIT[[1]]=='1'){
-      k = kernlab::vanilladot()
-    }else if (params_CIT[[1]]=='2') {
-      k = kernlab::rbfdot(1/(2*stats::median(stats::dist(X))^2))
-    }else if (params_CIT[[1]]=='3') {
-      k = kernlab::laplacedot(1/(2*stats::median(stats::dist(X))^2))
-    }else if (params_CIT[[1]]=='4') {
-      k = kernlab::tanhdot()
-    }else if (params_CIT[[1]]=='5') {
-      k = kernlab::splinedot()
-    }else if (params_CIT[[1]]=='6') {
-      k = kernlab::besseldot(sigma=1/(2*stats::median(stats::dist(X))^2))
-    }
+    k <- params_CIT[[1]]
     start_time <- timestamp()
     resu <- kpc_graph(X,Y,Z, k=k, Knn=as.numeric(params_CIT[[2]]), model.formula.YZ=params_CIT[[3]])
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
-  }else if(cit=='CMIknn'){
-    CMIknn <- reticulate::import('tigramite.independence_tests.cmiknn')$CMIknn
-    np <- reticulate::import('numpy')
-    cmi_knn <- CMIknn(significance="shuffle_test",
-                     knn=as.integer(1),                    ## Adapt. Have a look at the docs
-                     shuffle_neighbors=as.integer(5),
-                     sig_samples=as.integer(50),   ## ADAPT IF YOU WANT, I recommend 500 minimum
-                     sig_blocklength=as.integer(1),    ## Since you're not using time series (only relevant if z=None)
-                     transform=r_to_py("ranks")    ## This is the parameter used in my AISTATS paper...
-    )
-    # Check if X is a matrix
-    if (!is.matrix(X)) {
-      # If X is not a matrix, try converting it to a matrix
-      if (is.vector(X)) {
-        # If X is a vector, reshape it into a matrix
-        dim(X) <- c(length(X), 1)
-      } else {
-        stop("X must be a matrix or a vector.")
-      }
-    }
-    # Check if X is a matrix
-    if (!is.matrix(Y)) {
-      # If X is not a matrix, try converting it to a matrix
-      if (is.vector(Y)) {
-        # If X is a vector, reshape it into a matrix
-        dim(Y) <- c(length(Y), 1)
-      } else {
-        stop("X must be a matrix or a vector.")
-      }
-    }
-    # Check if X is a matrix
-    if (!is.matrix(Z)) {
-      # If X is not a matrix, try converting it to a matrix
-      if (is.vector(Z)) {
-        # If X is a vector, reshape it into a matrix
-        dim(Z) <- c(length(Z), 1)
-      } else {
-        stop("X must be a matrix or a vector.")
-      }
-    }
-    cmi_knn$run_test_raw(np$array(X), np$array(Y), np$array(Z))
-    CMIknn$run_test_raw(np$array(X), np$array(Y), np$array(Z))
+  }else if(cit=='cmiknn'){
+    start_time <- timestamp()
+    res <- cmiknn(np$array(X), np$array(Y), np$array(Z))
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }
   return(res)
 }
