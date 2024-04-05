@@ -41,26 +41,28 @@ DNCIT <- function(X, Y, Z, embedding_map_with_parameters = NULL, cit_with_parame
     X <- X
   }else if (is.character(X)){
     # Get a list of all files in the directory
-    all_files <- list.files(X)
+    dir_path <- X
+    all_files <- list.files(dir_path)
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']
-    img_types <- embedding_map_with_parameters['data_loader']
+    img_types <- embedding_map_with_parameters['img_types']
     if (embedding_map == 'open_ai_clip'){
       if (img_types == 'png'){
         # Filter out only the image files (png in this case)
         img_files <- all_files[grep("\\.png$", all_files, ignore.case = TRUE)]
-
+        X_list <- list()
         for (path in img_files){
-          X <- readPNG(path)
-          X <- open_ai_clip(X)
+          img <- PIL_image$open(img_file)
+          feature_rep <- r_open_ai_clip(img)
+          X_list <- append(X_list, list(feature_rep))
         }
+        X <- do.call(rbind, X_list)
       }
     }
   }else{
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']
   }
-
 
   #### nonparametric CIT
   if (!(is.matrix(X))){

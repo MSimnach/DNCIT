@@ -9,6 +9,7 @@ np <- NULL
     reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
     reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
     reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
+    #reticulate::py_install(packages = "pillow", envname = 'r-cits',pip=TRUE)
   }
   reticulate::use_virtualenv("r-cits", required = FALSE)
 
@@ -16,5 +17,6 @@ np <- NULL
   CMIknn <<- reticulate::import("tigramite.independence_tests.cmiknn", delay_load = TRUE)
   np <<- reticulate::import('numpy', delay_load = TRUE)
   fcit <<- reticulate::import('fcit', delay_load = TRUE)
-  open_ai_clip <<- reticulate::import('create_model_and_transform', delay_load = TRUE)
+  open_ai_clip <<- reticulate::import('open_clip', delay_load = TRUE)
+  PIL_image <<- reticulate::import('PIL.Image', delay_load = TRUE)
 }
