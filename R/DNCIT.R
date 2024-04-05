@@ -34,16 +34,32 @@
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' res <- DNCIT(X, Y, Z)
-DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list()) {
-  ### feature representations of X
-  if (is.null(embedding_map)) {
+DNCIT <- function(X, Y, Z, embedding_map_with_parameters = NULL, cit_with_parameters = NULL) {
+  #### Embedding map to obtain feature representations of X
+  if (is.null(embedding_map_with_parameters)) {
+    embedding_map <- NULL
     X <- X
-  }else if (embedding_map == 'open_ai_clip'){
-    X <- open_ai_clip(X)
-  }else {
-    X <- embedding_map(X)
-  }
+  }else if (is.character(X)){
+    # Get a list of all files in the directory
+    all_files <- list.files(X)
+    embedding_map <- embedding_map_with_parameters['embedding_map']
+    data_loader <- embedding_map_with_parameters['data_loader']
+    img_types <- embedding_map_with_parameters['data_loader']
+    if (embedding_map == 'open_ai_clip'){
+      if (img_types == 'png'){
+        # Filter out only the image files (png in this case)
+        img_files <- all_files[grep("\\.png$", all_files, ignore.case = TRUE)]
 
+        for (path in img_files){
+          X <- readPNG(path)
+          X <- open_ai_clip(X)
+        }
+      }
+    }
+  }else{
+    embedding_map <- embedding_map_with_parameters['embedding_map']
+    data_loader <- embedding_map_with_parameters['data_loader']
+  }
 
 
   #### nonparametric CIT
@@ -55,6 +71,14 @@ DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list
   }
   if(!(is.matrix(Z))) {
     return("Confounder Z should be a nxp-matrix")
+  }
+
+  # load cit and parameters
+  if (is.null(cit_with_parameters)) {
+    cit_with_parameters <- list(cit = "RCOT", params_cit = list())
+  }else{
+    cit <- cit_with_parameters['cit']
+    params_cit <- cit_with_parameters['params_cit']
   }
 
   ## apply nonparametric CIT
