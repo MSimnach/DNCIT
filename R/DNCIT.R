@@ -35,17 +35,29 @@
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' res <- DNCIT(X, Y, Z)
 DNCIT <- function(X, Y, Z, embedding_map = NULL, cit = "RCOT", params_cit = list()) {
-  if (!(is.matrix(X) && is.matrix(Y) && is.matrix(Z))) {
-    return("Please input variables as matrices")
-  }
-  ## feature representations of X
+  ### feature representations of X
   if (is.null(embedding_map)) {
     X <- X
-  } else {
+  }else if (embedding_map == 'open_ai_clip'){
+    X <- open_ai_clip(X)
+  }else {
     X <- embedding_map(X)
   }
 
-  ## nonparametric CIT
+
+
+  #### nonparametric CIT
+  if (!(is.matrix(X))){
+    return("The feature representation of X is not a matrix")
+  }
+  if(!(is.matrix(Y))){
+    return("Y should be given as a nx1-matrix")
+  }
+  if(!(is.matrix(Z))) {
+    return("Confounder Z should be a nxp-matrix")
+  }
+
+  ## apply nonparametric CIT
   if (cit == "RCOT") {
     start_time <- timestamp()
     res <- RCIT::RCoT(X, Y, Z)
