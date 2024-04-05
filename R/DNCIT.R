@@ -16,9 +16,8 @@
 #' @param X A nxp-matrix of n p-dimensional (vectorized) images or a feature representation of the images
 #' @param Y A nx1-matrix of n univariate target variables
 #' @param Z A q-dimensional vector-valued confounder (optional)
-#' @param embedding_map An embedding map computing feature representations from the images (optional)
-#' @param cit The CIT applied to the feature representations, Y and Z. Default is "RCOT"
-#' @param params_cit A list of parameters for the CIT
+#' @param embedding_map_with_parameters A list for the embedding map and its parameters. Default is "open_ai_clip" and "PIL", select 'feature_representations' if X already a feature representation.
+#' @param cit_with_parameters The cit and its parameters applied to the feature representations, Y and Z. Default is "RCOT"
 #'
 #' @return list of p-value, test statistic and runtime
 #' @importFrom RCIT RCoT
@@ -34,31 +33,32 @@
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' res <- DNCIT(X, Y, Z)
-DNCIT <- function(X, Y, Z, embedding_map_with_parameters = NULL, cit_with_parameters = NULL) {
+DNCIT <- function(X, Y, Z,
+                  embedding_map_with_parameters = list(embedding_map == 'open_ai_clip',
+                                                      data_loader = 'PIL'),
+                  cit_with_parameters = NULL) {
   #### Embedding map to obtain feature representations of X
-  if (is.null(embedding_map_with_parameters)) {
-    embedding_map <- NULL
+  if (is.matrix(X) && embedding_map_with_parameters == 'feature_representations') {
     X <- X
+  }else if(is.matrix(X) && !(embedding_map_with_parameters == 'feature_representations')){
+
   }else if (is.character(X)){
     # Get a list of all files in the directory
     dir_path <- X
     all_files <- list.files(dir_path)
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']
-    img_types <- embedding_map_with_parameters['img_types']
-    if (embedding_map == 'open_ai_clip'){
-      if (img_types == 'png'){
-        # Filter out only the image files (png in this case)
-        img_files <- all_files[grep("\\.png$", all_files, ignore.case = TRUE)]
-        X_list <- list()
-        for (path in img_files){
-          img <- PIL_image$open(img_file)
-          feature_rep <- r_open_ai_clip(img)
-          X_list <- append(X_list, list(feature_rep))
-        }
-        X <- do.call(rbind, X_list)
+
+    if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
+      X_list <- list()
+      for (path in img_files){
+        img <- PIL_image$open(img_file)
+        feature_rep <- r_open_ai_clip(img)
+        X_list <- append(X_list, list(feature_rep))
       }
+      X <- do.call(rbind, X_list)
     }
+
   }else{
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']

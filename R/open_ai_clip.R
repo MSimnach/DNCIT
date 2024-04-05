@@ -7,10 +7,13 @@
 #' @export
 r_open_ai_clip <- function(PIL_img, params_open_ai_clip=NULL){
   if (is.null(params_open_ai_clip)){
+    # load specified open ai model
     model_and_preprocess <- open_ai_clip$create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
     model <- model_and_preprocess[[1]]
+    #preprocess images to fit as input to open_ai model
     preprocess <- model_and_preprocess[[3]]
     img_preprocessed <- preprocess(PIL_img)$unsqueeze(as.integer(0))
+    #get feature representation
     feature_rep = model$encode_image(img_preprocessed)$float()
     feature_rep <- feature_rep/feature_rep$norm(dim=as.integer(-1), keepdim = r_to_py(TRUE))
     #to numpy

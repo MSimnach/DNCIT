@@ -8,7 +8,8 @@ DNCIT(
   X,
   Y,
   Z,
-  embedding_map_with_parameters = NULL,
+  embedding_map_with_parameters = list(embedding_map == "open_ai_clip", data_loader =
+    "PIL"),
   cit_with_parameters = NULL
 )
 }
@@ -19,11 +20,9 @@ DNCIT(
 
 \item{Z}{A q-dimensional vector-valued confounder (optional)}
 
-\item{embedding_map}{An embedding map computing feature representations from the images (optional)}
+\item{embedding_map_with_parameters}{A list for the embedding map and its parameters. Default is "open_ai_clip" and "PIL", select 'feature_representations' if X already a feature representation.}
 
-\item{cit}{The CIT applied to the feature representations, Y and Z. Default is "RCOT"}
-
-\item{params_cit}{A list of parameters for the CIT}
+\item{cit_with_parameters}{The cit and its parameters applied to the feature representations, Y and Z. Default is "RCOT"}
 }
 \value{
 list of p-value, test statistic and runtime

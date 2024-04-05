@@ -4,7 +4,7 @@ test_that("DNCIT default setting", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  res <- DNCIT(X, Y, Z)
+  res <- DNCIT(X, Y, Z, embedding_map_with_parameters ='feature_representations')
   expect_true(res$p >= 0 && res$p <= 1 &&
                 as.numeric(res$runtime) >= 0 &&
                 length(res) ==3)
@@ -17,7 +17,7 @@ test_that("Deep-RCoT applicable to multivariate X,Z, univariate Y", {
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
   cit_with_parameters <- list(cit = "RCOT", params_cit = list())
-  res <- DNCIT(X, Y, Z, cit_with_parameters = cit_with_parameters)
+  res <- DNCIT(X, Y, Z, embedding_map_with_parameters ='feature_representations', cit_with_parameters = cit_with_parameters)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 as.numeric(res$runtime) >= 0 &&
                 length(res) ==3)
