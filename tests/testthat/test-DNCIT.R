@@ -1,26 +1,10 @@
-test_that('are we here', {
-  expect_true(TRUE)
-})
-
-test_that("Deep-RCoT applicable to univariate X,Y,Z", {
-  n <- 20; p <- 1; q <- 1
+test_that("DNCIT default setting", {
+  n <- 20; p <- 10; q <- 2
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  res <- DNCIT(X, Y, Z, cit = "RCOT")
-  expect_true(res$p >= 0 && res$p <= 1 &&
-                as.numeric(res$runtime) >= 0 &&
-                length(res) ==3)
-})
-
-test_that("Deep-RCoT applicable to multivariate X, univariate Y,Z", {
-  n <- 20; p <- 1; q <- 1
-  X <- matrix(rnorm(n*p), nrow = n, ncol = p)
-  Y <- matrix(rnorm(n), nrow = n)
-  Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-
-  res <- DNCIT(X, Y, Z, cit = "RCOT")
+  res <- DNCIT(X, Y, Z)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 as.numeric(res$runtime) >= 0 &&
                 length(res) ==3)
@@ -32,7 +16,8 @@ test_that("Deep-RCoT applicable to multivariate X,Z, univariate Y", {
   Y <- matrix(rnorm(n), nrow = n)
   Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 
-  res <- DNCIT(X, Y, Z, cit = "RCOT")
+  cit_with_parameters <- list(cit = "RCOT", params_cit = list())
+  res <- DNCIT(X, Y, Z, cit_with_parameters = cit_with_parameters)
   expect_true(res$p >= 0 && res$p <= 1 &&
                 as.numeric(res$runtime) >= 0 &&
                 length(res) ==3)

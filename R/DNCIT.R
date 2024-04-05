@@ -77,7 +77,7 @@ DNCIT <- function(X, Y, Z, embedding_map_with_parameters = NULL, cit_with_parame
 
   # load cit and parameters
   if (is.null(cit_with_parameters)) {
-    cit_with_parameters <- list(cit = "RCOT", params_cit = list())
+    cit <- "RCOT"
   }else{
     cit <- cit_with_parameters['cit']
     params_cit <- cit_with_parameters['params_cit']
