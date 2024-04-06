@@ -49,16 +49,26 @@ DNCIT <- function(X, Y, Z,
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']
 
-    if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
-      X_list <- list()
-      for (path in img_files){
-        img <- PIL_image$open(img_file)
-        feature_rep <- r_open_ai_clip(img)
-        X_list <- append(X_list, list(feature_rep))
-      }
-      X <- do.call(rbind, X_list)
+    if (embedding_map == 'feature_representations' && data_loader == 'npz'){
+        X_npz <- np$load(all_files)
+        ids_npz <- X_npz$files
+        features_dim <- length(X_npz$get(ids[1]))
+        n <- length(ids_npz)
+        X <- matrix(NA, nrow=n, ncol=features_dim, dimnames = list(ids_npz, NULL))
+        for (id in ids_npz){
+          X[id,] <- X_npz$get(id)
+        }
+    }else if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
+        X_list <- list()
+        for (path in img_files){
+          img <- PIL_image$open(img_file)
+          feature_rep <- r_open_ai_clip(img)
+          X_list <- append(X_list, list(feature_rep))
+        }
+        X <- do.call(rbind, X_list)
+    }else{
+      return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
     }
-
   }else{
     embedding_map <- embedding_map_with_parameters['embedding_map']
     data_loader <- embedding_map_with_parameters['data_loader']
