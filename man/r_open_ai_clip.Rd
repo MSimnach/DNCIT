@@ -2,7 +2,7 @@
 % Please edit documentation in R/open_ai_clip.R
 \name{r_open_ai_clip}
 \alias{r_open_ai_clip}
-\title{Title}
+\title{Open AI CLIP}
 \usage{
 r_open_ai_clip(PIL_img, params_open_ai_clip = NULL)
 }
@@ -15,5 +15,5 @@ r_open_ai_clip(PIL_img, params_open_ai_clip = NULL)
 Feature representation of the image obtained by open ai model
 }
 \description{
-Title
+Open AI CLIP
 }

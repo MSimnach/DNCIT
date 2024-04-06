@@ -1,7 +1,7 @@
-#' Title
+#' Open AI CLIP
 #'
 #' @param PIL_img image loaded with PIL.Image.open
-#' @param params_open_ai_clip Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2b_s34b_b79k)
+#' @param params_open_ai_clip Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)
 #'
 #' @return Feature representation of the image obtained by open ai model
 #' @export

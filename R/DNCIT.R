@@ -62,10 +62,12 @@ DNCIT <- function(X, Y, Z,
         X_list <- list()
         for (path in all_files){
           img <- PIL_image$open(path)
-          feature_rep <- r_open_ai_clip(img)
+          #feature_rep <- r_open_ai_clip(img)
           X_list <- append(X_list, list(feature_rep))
         }
         X <- do.call(rbind, X_list)
+    }else if(embedding_map == 'tensor' && data_loader == 'png'){
+      img <- png::readPNG(file_path)
     }else{
       return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
     }
