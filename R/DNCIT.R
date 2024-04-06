@@ -126,6 +126,8 @@ DNCIT <- function(X, Y, Z,
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else{
+    return("The specified CIT is not implemented.")
   }
   return(res)
 }
