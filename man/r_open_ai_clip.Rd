@@ -9,7 +9,7 @@ r_open_ai_clip(PIL_img, params_open_ai_clip = NULL)
 \arguments{
 \item{PIL_img}{image loaded with PIL.Image.open}
 
-\item{params_open_ai_clip}{Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2b_s34b_b79k)}
+\item{params_open_ai_clip}{Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)}
 }
 \value{
 Feature representation of the image obtained by open ai model

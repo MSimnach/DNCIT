@@ -8,6 +8,7 @@
 #' @importFrom kernlab vanilladot
 #' @importFrom KPC KPCgraph
 #' @importFrom momentchi2 hbe
+#' @importFrom png readPNG
 #' @importFrom RCIT RCoT
 #' @importFrom reticulate import
 #' @importFrom reticulate py_install
