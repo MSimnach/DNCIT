@@ -62,7 +62,7 @@ DNCIT <- function(X, Y, Z,
         X_list <- list()
         for (path in all_files){
           img <- PIL_image$open(path)
-          #feature_rep <- r_open_ai_clip(img)
+          feature_rep <- r_open_ai_clip(img)
           X_list <- append(X_list, list(feature_rep))
         }
         X <- do.call(rbind, X_list)
