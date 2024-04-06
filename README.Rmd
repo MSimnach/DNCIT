@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/MSimnach/DNCIT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MSimnach/DNCIT?branch=master)
 <!-- badges: end -->
 
-DNCIT provides statistical tests for conditional dependence between an image and a scalar, given a vector-valued confounder, called deep nonparametric conditional independence test (CIT) (DNCIT) and developed in the paper 'Deep Nonparametric Conditional Independence Tests for Images'. The package consists of a wrapper for potential embedding maps and a selection of existing nonparametric CITs. 
+DNCIT provides statistical tests for conditional dependence between an image and a scalar, given a vector-valued confounder, called deep nonparametric conditional independence test (CIT) (DNCIT) and developed in the paper 'Deep Nonparametric Conditional Independence Tests for Images'. The package consists of a wrapper for potential embedding maps and a selection of existing nonparametric CITs..
 
 ## Installation
 

@@ -67,7 +67,7 @@ DNCIT <- function(X, Y, Z,
         }
         X <- do.call(rbind, X_list)
     }else if(embedding_map == 'tensor' && data_loader == 'png'){
-      img <- png::readPNG(file_path)
+      img <- png::readPNG(all_files)
     }else{
       return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
     }
