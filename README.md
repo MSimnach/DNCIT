@@ -7,6 +7,7 @@
 
 [![Codecov test
 coverage](https://codecov.io/gh/MSimnach/DNCIT/branch/master/graph/badge.svg)](https://app.codecov.io/gh/MSimnach/DNCIT?branch=master)
+[![R-CMD-check](https://github.com/MSimnach/DNCIT/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MSimnach/DNCIT/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 DNCIT provides statistical tests for conditional dependence between an
