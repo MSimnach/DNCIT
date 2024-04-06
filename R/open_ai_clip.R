@@ -15,7 +15,7 @@ r_open_ai_clip <- function(PIL_img, params_open_ai_clip=NULL){
     img_preprocessed <- preprocess(PIL_img)$unsqueeze(as.integer(0))
     #get feature representation
     feature_rep = model$encode_image(img_preprocessed)$float()
-    feature_rep <- feature_rep/feature_rep$norm(dim=as.integer(-1), keepdim = r_to_py(TRUE))
+    feature_rep <- feature_rep/feature_rep$norm(dim=as.integer(-1), keepdim = reticulate::r_to_py(TRUE))
     #to numpy
     feature_rep <- feature_rep$view(as.integer(-1))$detach()$numpy()
   }

@@ -32,7 +32,7 @@
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-#' res <- DNCIT(X, Y, Z)
+#' res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
 DNCIT <- function(X, Y, Z,
                   embedding_map_with_parameters = list(embedding_map == 'open_ai_clip',
                                                       data_loader = 'PIL'),
@@ -52,7 +52,7 @@ DNCIT <- function(X, Y, Z,
     if (embedding_map == 'feature_representations' && data_loader == 'npz'){
         X_npz <- np$load(all_files)
         ids_npz <- X_npz$files
-        features_dim <- length(X_npz$get(ids[1]))
+        features_dim <- length(X_npz$get(ids_npz[1]))
         n <- length(ids_npz)
         X <- matrix(NA, nrow=n, ncol=features_dim, dimnames = list(ids_npz, NULL))
         for (id in ids_npz){
@@ -60,8 +60,8 @@ DNCIT <- function(X, Y, Z,
         }
     }else if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
         X_list <- list()
-        for (path in img_files){
-          img <- PIL_image$open(img_file)
+        for (path in all_files){
+          img <- PIL_image$open(path)
           feature_rep <- r_open_ai_clip(img)
           X_list <- append(X_list, list(feature_rep))
         }
