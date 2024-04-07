@@ -59,8 +59,9 @@ DNCIT <- function(X, Y, Z,
         }
     }else if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
         X_list <- list()
-        for (path in all_files){
-          img <- PIL_image$open(path)
+        for (file in all_files){
+          file_path <- paste0(dir_path, file)
+          img <- PIL_image$open(file_path)
           feature_rep <- r_open_ai_clip(img)
           X_list <- append(X_list, list(feature_rep))
         }
