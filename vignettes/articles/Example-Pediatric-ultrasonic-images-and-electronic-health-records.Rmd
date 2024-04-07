@@ -11,12 +11,17 @@ knitr::opts_chunk$set(
 
 We apply the deep nonparametric conditional independence test (DNCIT) to pediatric ultrasonic images and electronic health records. This will illustrate an intermediate example to medical images and showcase potential challenges. 
 
-In general, the DNCIT is developed for data consisting of $n$ i.i.d. copies of an image $X$, a scalar $Y$ and, potentially, a vector-valued confounder $Z$. The main challenge to apply the DNCIT is to input the data in the correct format, which is especially important for images. There are two important cases between which we differentiate: 
+The DNCIT tests for conditional associations between an image and a scalar outcome, given a vector-valued confounder. Thereby, different research questions can be addressed, with some examples being:
+
+* Does the image contain additional information about the diagnosis, given electronic health records (EHRs)? 
+* Is an EHR a potential confounder of the image, given other confounders? 
+
+In general, the DNCIT is developed for data consisting of $n$ i.i.d. copies of an image $X$, a scalar $Y$ and, potentially, a vector-valued confounder $Z$. The main challenge to apply the `DNCIT()` function is to input the data in the correct format, which is especially important for images. There are two important cases between which we differentiate: 
 
 * Feature representations of the observed images are already available should be used in the test.
 * The raw images are available and feature representations should be computed by a default embedding map of the package.
 
-We discuss both cases separatly in this order in the following two sections. Our dataset consists of a subset of 572 pediatric ultrasonic images and tabular electronic health records. Additionally, we obtained preprocessed feature representations of the images.
+We discuss both scenarios separately in the following two sections, targeting the research questions above. Our dataset consists of a subset of the 572 pediatric ultrasonic images and tabular electronic health records. Additionally, we obtained preprocessed feature representations of the images.
 
 ```{r setup}
 library(DNCIT)
@@ -32,7 +37,7 @@ if (requireNamespace("fs")){
 
 This case expects your data to consist of a metadata file with all the tabular data and a file with the feature representations. 
 
-In our example, the original data was processed in a python and the tabular data is saved as a python dictionary and the feature representations are saved as a numpy array in a .npz, including the subject ids to each feature representations. Then, the meta data can be loaded as follows:
+In our example, the original images were preprocessed in python and the resulting feature representations are saved as a numpy array in a .npz. This format can be automatically loaded and processed by the function `DNCIT()` Moreover, the tabular data is saved as a python dictionary, which can be loaded into R as a list:
 
 
 ```{r meta data}
@@ -41,7 +46,30 @@ meta_data_path <- paste(pediatric_data_path, 'app_data', sep='/')
 meta_data_dict <- readLines(meta_data_path)
 json <- reticulate::import('json')
 meta_data <- json$loads(meta_data_dict)
+head(meta_data,1)
 ```
+
+So far, the tabular data consists for each subject (here subject with id 61) of the file names of the images in [[1]], the diagnosis of the patient in [[2]], tabular data in [[3]] and [[4]]. The tabular data in [[3]] consists of the features 'Age', 'Sex', 'Height', 'Weight', 'BMI', 'Alvarado_Score', 'Paedriatic_Appendicitis_Score',
+'Peritonitis', 'Migratory_Pain', 'Lower_Right_Abd_Pain', 'Contralateral_Rebound_Tenderness', 'Coughing_Pain', 'Psoas_Sign', 'Nausea', 'Loss_of_Appetite', 'Body_Temperature', 'Dysuria', 'Stool', 'WBC_Count', 'Neutrophil_Percentage', 'CRP', 'Ketones_in_Urine', 'RBC_in_Urine',                'WBC_in_Urine', 'Appendix_on_US', 'Appendix_Diameter', 'Free_Fluids',  'Appendix_Wall_Layers', 'Target_Sign', 'Perfusion', 'Perforation', 
+'Surrounding_Tissue_Reaction', 'Pathological_Lymph_Nodes', 'Bowel_Wall_Thickening', 'Ileus', 'Coprostasis', 'Meteorism', 'Enteritis', 'Appendicular_Abscess', 'Conglomerate_of_Bowel_Loops', 'Gynecological_Findings', with only the binary features replicated in [[4]] (non binary values result from a mean imputation during the preprocessing of the data). 
+
+First, we are interested in research question one, i.e. does the image contain additional information about the diagnosis, given all EHRs? Therefore, the confounder $Z$ consists of all EHRs while the diagnosis $Y$ is the scalar outcome. The function `DNCIT()` requires both inputs to be input as matrix:
+
+```{r construct Z and Y}
+Y <- matrix(NA, nrow = length(meta_data), ncol = 1, dimnames = list(names(meta_data),NULL))
+for (id in names(meta_data)){
+  Y[id,] <- meta_data[id][[id]][[2]]
+}
+p <- length(meta_data$'61'[[3]])
+Z <- matrix(NA, nrow = length(meta_data), ncol = p, dimnames = list(names(meta_data),NULL))
+for (id in names(meta_data)){
+  Z[id,] <- meta_data[id][[id]][[3]]
+}
+print(head(Y,5))
+head(Z,5)
+```
+
+The ids of the subjects are expected as row names in Y and Z. Thereby, we can match them with the given feature representations. This is done automatically in the `DNCIT()` function for feature representations loaded from a .npz file. For the feature representations, the only thing that has to be provided is the directory of 
 
 ```{r feature representation data}
 feature_representations_path <- paste(pediatric_data_path, 'feature_representations/', sep='/')

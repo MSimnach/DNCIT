@@ -49,7 +49,10 @@ DNCIT <- function(X, Y, Z,
     data_loader <- embedding_map_with_parameters['data_loader']
 
     if (embedding_map == 'feature_representations' && data_loader == 'npz'){
-        X_npz <- np$load(all_files)
+      if(length(all_files) != 1){
+        stop("The directory should contain exactly one .npz file.")
+      }
+        X_npz <- np$load(paste0(dir_path, all_files[1]))
         ids_npz <- X_npz$files
         features_dim <- length(X_npz$get(ids_npz[1]))
         n <- length(ids_npz)
