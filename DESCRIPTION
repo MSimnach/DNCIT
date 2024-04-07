@@ -27,6 +27,7 @@ Imports:
 Remotes: 
     ericstrobl/RCIT
 Suggests: 
+    fs,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

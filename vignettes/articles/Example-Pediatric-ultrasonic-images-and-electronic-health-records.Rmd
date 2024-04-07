@@ -9,7 +9,55 @@ knitr::opts_chunk$set(
 )
 ```
 
+We apply the deep nonparametric conditional independence test (DNCIT) to pediatric ultrasonic images and electronic health records. This will illustrate an intermediate example to medical images and showcase potential challenges. 
+
+In general, the DNCIT is developed for data consisting of $n$ i.i.d. copies of an image $X$, a scalar $Y$ and, potentially, a vector-valued confounder $Z$. The main challenge to apply the DNCIT is to input the data in the correct format, which is especially important for images. There are two important cases between which we differentiate: 
+
+* Feature representations of the observed images are already available should be used in the test.
+* The raw images are available and feature representations should be computed by a default embedding map of the package.
+
+We discuss both cases separatly in this order in the following two sections. Our dataset consists of a subset of 572 pediatric ultrasonic images and tabular electronic health records. Additionally, we obtained preprocessed feature representations of the images.
+
 ```{r setup}
 library(DNCIT)
+if (requireNamespace("fs")){
+  library(fs)
+}else{
+  install.packages('fs')
+  library(fs)
+}
+```
+
+## DNCIT applied to available feature representations
+
+This case expects your data to consist of a metadata file with all the tabular data and a file with the feature representations. 
+
+In our example, the original data was processed in a python and the tabular data is saved as a python dictionary and the feature representations are saved as a numpy array in a .npz, including the subject ids to each feature representations. Then, the meta data can be loaded as follows:
+
+
+```{r meta data}
+pediatric_data_path <- fs::path_package("extdata/example_pediatric_patients", package = "DNCIT")
+meta_data_path <- paste(pediatric_data_path, 'app_data', sep='/')
+meta_data_dict <- readLines(meta_data_path)
+json <- reticulate::import('json')
+meta_data <- json$loads(meta_data_dict)
+```
+
+```{r feature representation data}
+feature_representations_path <- paste(pediatric_data_path, 'feature_representations/', sep='/')
+np <- reticulate::import('numpy')
+features_npz <- np$load(paste0(feature_representations_path, 'features.npz'))
+```
+
+## DNCITs applied directly to images
+
+```{r image data}
+img_path <- paste(pediatric_data_path, 'ultrasonic_images/', sep='/')
+img_files <- list()
+for(id in names(meta_data)){
+  img_files[id] <- paste0(img_path, meta_data[id][[id]][[1]][1])
+}
+print(img_files[1:5])
+
 ```
 
