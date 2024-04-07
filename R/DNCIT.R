@@ -34,8 +34,7 @@
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
 DNCIT <- function(X, Y, Z,
-                  embedding_map_with_parameters = list(embedding_map == 'open_ai_clip',
-                                                      data_loader = 'PIL'),
+                  embedding_map_with_parameters = 'feature_representations',
                   cit_with_parameters = NULL) {
   #### Embedding map to obtain feature representations of X
   if (is.matrix(X) && embedding_map_with_parameters == 'feature_representations') {

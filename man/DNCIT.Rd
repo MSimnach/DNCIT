@@ -8,8 +8,7 @@ DNCIT(
   X,
   Y,
   Z,
-  embedding_map_with_parameters = list(embedding_map == "open_ai_clip", data_loader =
-    "PIL"),
+  embedding_map_with_parameters = "feature_representations",
   cit_with_parameters = NULL
 )
 }

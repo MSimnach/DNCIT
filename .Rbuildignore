@@ -3,6 +3,5 @@
 ^LICENSE\.md$
 ^data-raw$
 ^README\.Rmd$
-^src$
 ^codecov\.yml$
 ^\.github$
