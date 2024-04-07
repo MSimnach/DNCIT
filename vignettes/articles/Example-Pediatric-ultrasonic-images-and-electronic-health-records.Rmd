@@ -1,5 +1,7 @@
 ---
 title: "Example: Pediatric ultrasonic images and electronic health records"
+output: html_document
+bibliography: "`r fs::path_package('references.bib', package='DNCIT')`" 
 ---
 
 ```{r, include = FALSE}
@@ -9,12 +11,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-We apply the deep nonparametric conditional independence test (DNCIT) to pediatric ultrasonic images and electronic health records. This will illustrate an intermediate example to medical images and showcase potential challenges. 
+We apply the deep nonparametric conditional independence test (DNCIT) to pediatric ultrasonic images and electronic health records from the dataset in [@Marcinkevics2023]. This will illustrate an intermediate example to medical images and showcase potential challenges. 
+
+```{r, echo=FALSE}
+
+```
 
 The DNCIT tests for conditional associations between an image and a scalar outcome, given a vector-valued confounder. Thereby, different research questions can be addressed, with some examples being:
 
-* Does the image contain additional information about the diagnosis, given electronic health records (EHRs)? 
-* Is an EHR a potential confounder of the image, given other confounders? 
+* Does the image contain additional information about the diagnosis, given all available electronic health records (EHRs)? 
+* Is a specific EHR a potential confounder of the image, given a set of confounder? 
+* Are image and diagnosis conditionally dependent given all confounder? 
+
+```{r, echo=FALSE}
+
+```
 
 In general, the DNCIT is developed for data consisting of $n$ i.i.d. copies of an image $X$, a scalar $Y$ and, potentially, a vector-valued confounder $Z$. The main challenge to apply the `DNCIT()` function is to input the data in the correct format, which is especially important for images. There are two important cases between which we differentiate: 
 
@@ -53,7 +64,7 @@ So far, the tabular data consists for each subject (here subject with id 61) of 
 'Peritonitis', 'Migratory_Pain', 'Lower_Right_Abd_Pain', 'Contralateral_Rebound_Tenderness', 'Coughing_Pain', 'Psoas_Sign', 'Nausea', 'Loss_of_Appetite', 'Body_Temperature', 'Dysuria', 'Stool', 'WBC_Count', 'Neutrophil_Percentage', 'CRP', 'Ketones_in_Urine', 'RBC_in_Urine',                'WBC_in_Urine', 'Appendix_on_US', 'Appendix_Diameter', 'Free_Fluids',  'Appendix_Wall_Layers', 'Target_Sign', 'Perfusion', 'Perforation', 
 'Surrounding_Tissue_Reaction', 'Pathological_Lymph_Nodes', 'Bowel_Wall_Thickening', 'Ileus', 'Coprostasis', 'Meteorism', 'Enteritis', 'Appendicular_Abscess', 'Conglomerate_of_Bowel_Loops', 'Gynecological_Findings', with only the binary features replicated in [[4]] (non binary values result from a mean imputation during the preprocessing of the data). 
 
-First, we are interested in research question one, i.e. does the image contain additional information about the diagnosis, given all EHRs? Therefore, the confounder $Z$ consists of all EHRs while the diagnosis $Y$ is the scalar outcome. The function `DNCIT()` requires both inputs to be input as matrix:
+First, we are interested in research question one, i.e. does the image contain additional information about the diagnosis, given all EHRs? Therefore, the confounder $Z$ consists of all EHRs while the diagnosis $Y$ is the scalar outcome. The function `DNCIT()` requires both inputs to be given as matrix:
 
 ```{r construct Z and Y}
 Y <- matrix(NA, nrow = length(meta_data), ncol = 1, dimnames = list(names(meta_data),NULL))
@@ -69,13 +80,22 @@ print(head(Y,5))
 head(Z,5)
 ```
 
-The ids of the subjects are expected as row names in Y and Z. Thereby, we can match them with the given feature representations. This is done automatically in the `DNCIT()` function for feature representations loaded from a .npz file. For the feature representations, the only thing that has to be provided is the directory of 
+The ids of the subjects are expected as row names in $Y$ and $Z$. Thereby, we can match them with the given feature representations in $X$. This is done automatically in the `DNCIT()` function for feature representations loaded from a .npz file. For the feature representations, the only thing that has to be provided is the directory of the .npz file.
 
 ```{r feature representation data}
-feature_representations_path <- paste(pediatric_data_path, 'feature_representations/', sep='/')
-np <- reticulate::import('numpy')
-features_npz <- np$load(paste0(feature_representations_path, 'features.npz'))
+X <- paste(pediatric_data_path, 'feature_representations/', sep='/')
 ```
+
+To test if the ultrasonic image contains additional information for the diagnosis after accounting for all information available in the EHRs, we test for conditional dependence between the images and the diagnosis given the EHRs with `DNCIT()`applied to $X$, $Y$ and $Z$. The function loads the feature representations, matches the ids of tabular data and feature representations and applies a CIT of our choice, with the default being the RCoT. The parameters to load the feature representations are given in a list [embedding_map_with_parameters], where we specify that we have already derived feature representations in embedding_map_with_parameters['embedding_map']='feature_representations' and the method to load them in embedding_map_with_parameters['data_loader']='npz'. Furthermore, we specify the CIT and its parameters in [cit_with_parameters]. 
+
+```{r DNCIT applied to feature representations}
+embedding_map_with_parameters <- list(embedding_map = 'feature_representations', data_loader = 'npz')
+cit_with_parameters <- list(cit = 'RCOT')
+res <- DNCIT(X, Y, Z, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)
+res
+```
+
+The `DNCIT()` function outputs the test statistic, p-value and runtime of the (nonparametric) CIT applied to the feature representations. The p-value is rather 
 
 ## DNCITs applied directly to images
 
@@ -89,3 +109,4 @@ print(img_files[1:5])
 
 ```
 
+## References
