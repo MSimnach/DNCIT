@@ -9,7 +9,7 @@ DNCIT(
   Y,
   Z,
   embedding_map_with_parameters = "feature_representations",
-  cit_with_parameters = NULL
+  cit_with_parameters = list(cit = "RCOT", params_cit = list(seed = 123))
 )
 }
 \arguments{

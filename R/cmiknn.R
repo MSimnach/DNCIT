@@ -39,7 +39,7 @@ cmiknn <- function(X,Y,Z, knn=0.15, shuffle_neighbors=5, sig_samples=500, transf
   )
   res <- cmi_knn$run_test_raw(np$array(X), np$array(Y), np$array(Z))
   res$p <- res[[2]]
-  res$Stat <- res[[1]]
+  res$Sta <- res[[1]]
   res[[2]] <- NULL
   res[[1]] <- NULL
   return(res)

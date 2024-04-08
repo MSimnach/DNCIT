@@ -35,6 +35,8 @@ n <- 20; p <- 10; q <- 2
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 Y <- matrix(rnorm(n), nrow = n)
 Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-kpc_graph(X, Y, Z, k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),
-Knn = 1, model.formula.YZ='V1~V2+V3')
+if(requireNamespace("kernlab", quietly = TRUE)){
+  kpc_graph(X, Y, Z, k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),
+  Knn = 1, model.formula.YZ='V1~V2+V3')
+}
 }

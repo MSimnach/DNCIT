@@ -1,4 +1,6 @@
 test_that("DNCIT default setting", {
+  skip_if_not_installed("kernlab")
+
   n <- 20; p <- 10; q <- 2
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)
@@ -11,6 +13,8 @@ test_that("DNCIT default setting", {
 })
 
 test_that("Deep-RCoT applicable to multivariate X,Z, univariate Y", {
+  skip_if_not_installed("kernlab")
+
   n <- 20; p <- 10; q <- 2
   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
   Y <- matrix(rnorm(n), nrow = n)

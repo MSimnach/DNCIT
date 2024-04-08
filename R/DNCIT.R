@@ -20,10 +20,7 @@
 #' @param cit_with_parameters The cit and its parameters applied to the feature representations, Y and Z. Default is "RCOT"
 #'
 #' @return list of p-value, test statistic and runtime
-#' @importFrom RCIT RCoT
-#' @importFrom momentchi2 hbe
-#' @importFrom GeneralisedCovarianceMeasure gcm.test
-#' @importFrom utils modifyList
+#' @import momentchi2
 #' @export
 #'
 #' @examples
@@ -35,9 +32,9 @@
 #' res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
 DNCIT <- function(X, Y, Z,
                   embedding_map_with_parameters = 'feature_representations',
-                  cit_with_parameters = NULL) {
+                  cit_with_parameters = list(cit = 'RCOT', params_cit = list(seed=123))) {
   #### Embedding map to obtain feature representations of X
-  if (is.matrix(X) && embedding_map_with_parameters == 'feature_representations') {
+  if (is.matrix(X) && ('feature_representations' %in% embedding_map_with_parameters)) {
     X <- X
   }else if(is.matrix(X) && !(embedding_map_with_parameters == 'feature_representations')){
 
@@ -51,7 +48,7 @@ DNCIT <- function(X, Y, Z,
     if (embedding_map == 'feature_representations' && data_loader == 'npz'){
       if(length(all_files) != 1){
         stop("The directory should contain exactly one .npz file.")
-      }
+      }else{
         X_npz <- np$load(paste0(dir_path, all_files[1]))
         ids_npz <- X_npz$files
         features_dim <- length(X_npz$get(ids_npz[1]))
@@ -60,15 +57,13 @@ DNCIT <- function(X, Y, Z,
         for (id in ids_npz){
           X[id,] <- X_npz$get(id)
         }
+      }
     }else if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
-        X_list <- list()
-        for (file in all_files){
-          file_path <- paste0(dir_path, file)
-          img <- PIL_image$open(file_path)
-          feature_rep <- r_open_ai_clip(img)
-          X_list <- append(X_list, list(feature_rep))
-        }
-        X <- do.call(rbind, X_list)
+      if(is.null(embedding_map_with_parameters['params_open_ai_clip'])){
+        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
+      }else{
+        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
+      }
     }else if(embedding_map == 'tensor' && data_loader == 'png'){
       img <- png::readPNG(all_files)
     }else{
@@ -86,29 +81,48 @@ DNCIT <- function(X, Y, Z,
   if(!(is.matrix(Y))){
     return("Y should be given as a nx1-matrix")
   }
-  if(!(is.matrix(Z))) {
+  if(!(is.matrix(Z)) && !(is.null(Z))) {
     return("Confounder Z should be a nxp-matrix")
   }
 
-  # load cit and parameters
-  if (is.null(cit_with_parameters)) {
-    cit <- "RCOT"
+  # match row names of X, Y, Z
+  if(is.null(row.names(X))){
+
+  }else if(is.null(Z)){
+    if(!(all(rownames(Y) %in% rownames(X))&& all(rownames(X) %in% rownames(Y)))){
+      return("The row names of X and Y should consist of the same names to match ids.")
+    }else{
+      order_Y <- match(rownames(X), rownames(Y))
+      Y <- Y[order_Y, , drop = FALSE]
+    }
+  }else if(!(all(rownames(X) %in% rownames(Y)) && all(rownames(X) %in% rownames(Z)) &&
+            all(rownames(Y) %in% rownames(X)) && all(rownames(Y) %in% rownames(Z)) &&
+            all(rownames(Z) %in% rownames(X)) && all(rownames(Z) %in% rownames(Y)))){
+    return("The row names of X, Y, and Z should consist of the same names to match ids.")
   }else{
-    cit <- cit_with_parameters['cit']
-    params_cit <- cit_with_parameters['params_cit']
+    order_Y <- match(rownames(X), rownames(Y))
+    order_Z <- match(rownames(X), rownames(Z))
+    Y <- Y[order_Y, , drop = FALSE]
+    Z <- Z[order_Z, , drop = FALSE]
   }
+
+  # load cit and parameters
+  cit <- cit_with_parameters$'cit'
+  params_cit <- cit_with_parameters$'params_cit'
 
   ## apply nonparametric CIT
   if (cit == "RCOT") {
+    updated_parameters <- update_params(RCIT::RCoT, X,Y,Z, params_cit)
+
     start_time <- timestamp()
-    res <- RCIT::RCoT(X, Y, Z)
+    res <- do.call(RCIT::RCoT, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
-  }else if(cit=='kpc_graph'){
+  }else if(cit=='cpt_kpc'){
     updated_parameters <- update_params(kpc_graph, X,Y,Z, params_cit)
 
     start_time <- timestamp()
-    resu <- kpc_graph(X,Y,Z, k=params_cit[[1]], Knn=as.numeric(params_cit[[2]]), model.formula.YZ=params_cit[[3]])
+    res <- do.call(kpc_graph, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cmiknn'){
@@ -124,10 +138,14 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='gcm'){
-    updated_parameters <- update_params(gcm.test, X,Y,Z, params_cit)
+    updated_parameters <- update_params(GeneralisedCovarianceMeasure::gcm.test, X,Y,Z, params_cit)
 
     start_time <- timestamp()
     res <- do.call(GeneralisedCovarianceMeasure::gcm.test, updated_parameters)
+    res[['p']] <- res[['p.value']]
+    res[['Sta']] <- res[['test.statistic']]
+    res[['p.value']] <- NULL
+    res[['test.statistic']] <- NULL
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
@@ -161,9 +179,15 @@ update_params <- function(cit.fct, X,Y,Z, new_params=list()){
   }
 
   updated_parameters <- utils::modifyList(default_parameters, valid_new_parameters)
-  updated_parameters$X <- X
-  updated_parameters$Y <- Y
-  updated_parameters$Z <- Z
+  if ('RCoT' %in% as.character(substitute(cit.fct))){
+    updated_parameters$x <- X
+    updated_parameters$y <- Y
+    updated_parameters$z <- Z
+  }else{
+    updated_parameters$X <- X
+    updated_parameters$Y <- Y
+    updated_parameters$Z <- Z
+  }
   return(updated_parameters)
 }
 

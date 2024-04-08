@@ -1,11 +1,12 @@
-#' @importFrom reticulate import use_virtualenv virtualenv_exists py_install
+## Python virtual environment setup with reticulate
 
 CMIknn <- NULL
 np <- NULL
 
 .onLoad <- function(libname, pkgname) {
   if(!reticulate::virtualenv_exists('r-cits')){
-    reticulate::py_install(packages = "tigramite", envname = 'r-cits')
+    reticulate::virtualenv_create(envname="r-cits", version="<=3.10")
+    reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
     reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
     reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
     reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
@@ -18,4 +19,5 @@ np <- NULL
   fcit <<- reticulate::import('fcit', delay_load = TRUE)
   open_ai_clip <<- reticulate::import('open_clip', delay_load = TRUE)
   PIL_image <<- reticulate::import('PIL.Image', delay_load = TRUE)
+  py_torch <<- reticulate::import('torch', delay_load = TRUE)
 }

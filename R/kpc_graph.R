@@ -21,8 +21,10 @@
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-#' kpc_graph(X, Y, Z, k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),
-#' Knn = 1, model.formula.YZ='V1~V2+V3')
+#' if(requireNamespace("kernlab", quietly = TRUE)){
+#'   kpc_graph(X, Y, Z, k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),
+#'   Knn = 1, model.formula.YZ='V1~V2+V3')
+#' }
 kpc_graph <- function(X, Y, Z, k, Knn, model.formula.YZ, M = 30, nstep = 50){
   Y.CPT <- cpt_gam(Y,Z, model.formula.YZ, M = M, nstep = nstep)
   T.graph <- KPC::KPCgraph(Y=X,Z=Y, X=Z, k=k, Knn=Knn)

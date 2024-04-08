@@ -4,12 +4,18 @@
 \alias{r_open_ai_clip}
 \title{Open AI CLIP}
 \usage{
-r_open_ai_clip(PIL_img, params_open_ai_clip = NULL)
+r_open_ai_clip(
+  params_open_ai_clip = NULL,
+  dir_path = dir_path,
+  all_files = all_files
+)
 }
 \arguments{
-\item{PIL_img}{image loaded with PIL.Image.open}
-
 \item{params_open_ai_clip}{Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)}
+
+\item{dir_path}{Path to the directory containing the images}
+
+\item{all_files}{List of all files in the directory}
 }
 \value{
 Feature representation of the image obtained by open ai model
