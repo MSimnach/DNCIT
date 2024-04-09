@@ -2,6 +2,7 @@
 #'
 #' @param params_tuckerD Parameters dim_reduced of the reduced array dimension (default c(10,10) for 2D images), and max_iter, tol as described in `rTensor::tucker()`
 #' @param img_dir_path Path to the directory with the images
+#' @param imgs_array nx(pixel)-array of images
 #'
 #' @return X Feature representations of the images of dimension as vectorization of dim_reduced array
 #' @export

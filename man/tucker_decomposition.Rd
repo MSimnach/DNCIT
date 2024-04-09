@@ -6,13 +6,16 @@
 \usage{
 tucker_decomposition(
   params_tuckerD = list(dim_reduced = c(10, 10)),
-  img_dir_path = NULL
+  img_dir_path = NULL,
+  imgs_array = NULL
 )
 }
 \arguments{
 \item{params_tuckerD}{Parameters dim_reduced of the reduced array dimension (default c(10,10) for 2D images), and max_iter, tol as described in \code{rTensor::tucker()}}
 
 \item{img_dir_path}{Path to the directory with the images}
+
+\item{imgs_array}{nx(pixel)-array of images}
 }
 \value{
 X Feature representations of the images of dimension as vectorization of dim_reduced array

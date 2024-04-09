@@ -2,7 +2,6 @@
 #'
 #' @param params_open_ai_clip Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)
 #' @param img_dir_path Path to the directory containing the images
-#' @param img_file_names List of all files in the directory
 #'
 #' @return Feature representation of the image obtained by open ai model
 #' @export

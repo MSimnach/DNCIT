@@ -35,13 +35,9 @@ if (requireNamespace("fs")){
 }
 ```
 
-## DNCIT applied to available feature representations
-
-This case expects your data to consist of a metadata file with all the tabular data and a file with the feature representations. 
-
 ### Preprocessing 
 
-In our example, the original images were preprocessed in python and the resulting feature representations are saved as a numpy array in a .npz. This format can be automatically loaded and processed by the function `DNCIT()` Moreover, the tabular data is saved as a python dictionary, which can be loaded into R as a list:
+In our example, the tabular data is saved as a python dictionary, which can be loaded into R as a list:
 
 
 ```{r meta data}
@@ -53,15 +49,29 @@ meta_data <- json$loads(meta_data_dict)
 head(meta_data,1)
 ```
 
-So far, the tabular data consists for each subject (here subject with id 61) of the file names of the images in [[1]], the diagnosis of the patient in [[2]], tabular data in [[3]] and [[4]]. The tabular data in [[3]] consists of the features: 
+So far, the tabular data consists for each subject (here subject with id 61) of the file names of the images in [[1]], the diagnosis of the patient in [[2]], tabular data in [[3]] and [[4]]. The tabular data in [[3]] consists of general, score, clinical, laboratory and image-derived features: 
 ```{r, echo=FALSE}
 EHRs <- c('Age', 'Sex', 'Height', 'Weight', 'BMI', 'Alvarado_Score', 'Paedriatic_Appendicitis_Score',
 'Peritonitis', 'Migratory_Pain', 'Lower_Right_Abd_Pain', 'Contralateral_Rebound_Tenderness', 'Coughing_Pain', 'Psoas_Sign', 'Nausea', 'Loss_of_Appetite', 'Body_Temperature', 'Dysuria', 'Stool', 'WBC_Count', 'Neutrophil_Percentage', 'CRP', 'Ketones_in_Urine', 'RBC_in_Urine',                'WBC_in_Urine', 'Appendix_on_US', 'Appendix_Diameter', 'Free_Fluids',  'Appendix_Wall_Layers', 'Target_Sign', 'Perfusion', 'Perforation', 
 'Surrounding_Tissue_Reaction', 'Pathological_Lymph_Nodes', 'Bowel_Wall_Thickening', 'Ileus', 'Coprostasis', 'Meteorism', 'Enteritis', 'Appendicular_Abscess', 'Conglomerate_of_Bowel_Loops', 'Gynecological_Findings')
-EHRs
+others <- c('Age', 'Sex', 'Height', 'Weight', 'BMI', 'Length_of_Stay')
+others <- others[others %in% EHRs]
+scores <- c('Alvarado_Score', 'Paedriatic_Appendicitis_Score')
+scores <- scores[scores %in% EHRs]
+clinical <- c('Peritonitis', 'Migratory_Pain', 'Lower_Right_Abd_Pain', 'Contralateral_Rebound_Tenderness', 'Ipsilateral_Rebound_Tenderness', 'Coughing_Pain', 'Psoas_Sign', 'Nausea', 'Loss_of_Appetite', 'Body_Temperature', 'Dysuria', 'Stool')
+clinical <- clinical[clinical %in% EHRs]
+lab <- c('WBC_Count', 'Neutrophil_Percentage', 'CRP', 'Ketones_in_Urine', 'RBC_in_Urine', 'WBC_in_Urine') 
+lab <- lab[lab %in% EHRs]
+ultrasound <- c('Appendix_on_US', 'Appendix_Diameter', 'Free_Fluids',  'Appendix_Wall_Layers', 'Target_Sign', 'Perfusion', 'Perforation', 'Surrounding_Tissue_Reaction', 'Pathological_Lymph_Nodes', 'Bowel_Wall_Thickening', 'Ileus', 'Coprostasis', 'Meteorism', 'Enteritis', 'Appendicular_Abscess', 'Conglomerate_of_Bowel_Loops', 'Gynecological_Findings') 
+ultrasound <- ultrasound[ultrasound %in% EHRs]
+non_ultrasound <- c(lab[lab %in% EHRs], clinical[clinical %in% EHRs], scores[scores %in% EHRs], others[others %in% EHRs])
+cat('General features: ', paste(others, collapse=" "), '\n',
+    'Scores: ', paste(scores, collapse=" "), '\n',
+    'Clinical: ', paste(clinical, collapse=" "), '\n',
+    'Laboratory: ', paste(lab, collapse=" "), '\n',
+    'Image derived: ', paste(ultrasound, collapse=" "), '\n', sep = '')
 ```
-
-First, we are interested in research question one, i.e. does the image contain additional information about the diagnosis, given all EHRs? Therefore, the conditioning variable $Z$ consists of all EHRs while the diagnosis $Y$ is the scalar outcome. The function `DNCIT()` requires both inputs to be given as matrix:
+The image derived features are expert-produced ultrasonic features. The function `DNCIT()` requires the scalar $Y$ as well as the conditioning variables $Z$ as matrix inputs. Thus, we convert the diagnosis and all EHRs to matrices
 
 ```{r construct Z and Y}
 Y <- matrix(NA, nrow = length(meta_data), ncol = 1, dimnames = list(names(meta_data),NULL))
@@ -69,31 +79,128 @@ for (id in names(meta_data)){
   Y[id,] <- meta_data[id][[id]][[2]]
 }
 p <- length(meta_data$'61'[[3]])
-Z <- matrix(NA, nrow = length(meta_data), ncol = p, dimnames = list(names(meta_data),EHRs))
+EHR_mat <- matrix(NA, nrow = length(meta_data), ncol = p, dimnames = list(names(meta_data),EHRs))
 for (id in names(meta_data)){
-  Z[id,] <- meta_data[id][[id]][[3]]
+  EHR_mat[id,] <- meta_data[id][[id]][[3]]
 }
+EHR_non_US <- EHR_mat[, non_ultrasound, drop=FALSE]
+EHR_US <- EHR_mat[, ultrasound, drop=FALSE]
+EHR_others <- EHR_mat[, others, drop=FALSE]
+print('First five entries of diagnoses: ')
 print(head(Y,5))
-head(Z,5)
+print('First five entries of EHRs: ')
+print(head(EHR_mat,5))
 ```
 
-The ids of the subjects are expected as row names in $Y$ and $Z$. Thereby, we can match them with the given feature representations in $X$. This is done automatically in the `DNCIT()` function for feature representations loaded from a .npz file. For the feature representations, the only thing that has to be provided is the directory of the .npz file.
+The ids of the subjects can be provided as row names in $Y$ and $Z$. Thereby, we can match them with the given feature representations in $X$. For example, this is done automatically in the `DNCIT()` function for feature representations loaded from a .npz file. For the feature representations, the only thing that has to be provided is the directory of the .npz file.
 
-```{r feature representation data}
-X <- paste(pediatric_data_path, 'feature_representations/', sep='/')
+## DNCITs applied directly to images
+
+It can happen that there are no feature representations available. Applying the implemented CITs directly to the images is not possible since are not able to handle the dimension of the image and either do not compute in reasonable time or produce unreliable results. As a solution, we propose in the paper to apply first a dimension reduction to the images and afterwards an existing CIT. Therefore, the `DNCIT()` function takes a pre-specified embedding map, computes corresponding feature representations for the images and applies a CIT of our choice to the feature representations.
+
+The package provides general default dimension reduction methods. This article applies the tucker decomposition from the package `vignette('rTensor')` adjusted to our setting in the function `tucker_decomposition()`. The function can be either applied to images loaded already as array or to a path of a directory with .png images. Usually, we recommend to first process the images and save the feature representations, and afterwards apply a CIT with these feature representations. The feature representations of the Tucker decomposition can be obtained by:
+
+```{r}
+img_path <- paste(pediatric_data_path, 'ultrasonic_images/', sep='/')
+# if(requireNamespace("progressr", quietly = TRUE)){
+#    progressr::with_progress(X <- tucker_decomposition(img_dir_path=img_path))
+# }else{
+#    features_tucker <- tucker_decomposition(img_dir_path=img_path)
+# } 
+features_tucker_path <- paste(pediatric_data_path, 'features_tucker', 'features_tucker.RData', sep='/')
+#save(features_tucker, file = features_tucker_path)
 ```
 
-### Information between image and diagnosis given all EHRs
+Throughout this article, we select the RCOT as CIT. We specify the CIT and its parameters in [cit_with_parameters], here by cit_with_parameters['cit']='RCOT' and cit_with_parameters['seed']=123, which is also the default option in `DNCIT()`. We take always the median of 20 runs of the RCOT, since the test is depending on a random seed.
 
-To test if the ultrasonic image contains additional information for the diagnosis after accounting for all information available in the EHRs, we test for conditional dependence between the images and the diagnosis given the EHRs with `DNCIT()`applied to $X$, $Y$ and $Z$. The function loads the feature representations, matches the ids of tabular data and feature representations and applies a CIT of our choice, with the default being the RCoT [@strobl2019approximate]. The parameters to load the feature representations are given in a list [embedding_map_with_parameters], where we specify that we have already derived feature representations in embedding_map_with_parameters['embedding_map']='feature_representations' and the method to load them in embedding_map_with_parameters['data_loader']='npz'. Furthermore, we specify the CIT and its parameters in [cit_with_parameters], e.g. by cit_with_parameters['cit']='RCOT' and cit_with_parameters['seed']=123. We compare here all implemented CITs:
+### Conditional association between image and diagnosis given all EHRs
+
+First, we study if the image contains additional information about the diagnosis, given all available EHRs? To test if the ultrasonic image contains additional information for the diagnosis after accounting for all information available in the EHRs, we test for conditional associations between the images and the diagnosis given the EHRs with `DNCIT()` applied to image-derived features in $X$ and the diagnosis in $Y$, given other EHRs in $Z$. The parameters to load the feature representations are given in a list [embedding_map_with_parameters], where we specify that we have already derived and loaded feature representations by embedding_map_with_parameters='feature_representations'. Furthermore, 
+
+```{r image data}
+# features are loaded as features_tucker
+load(features_tucker_path)
+embedding_map_with_parameters <- list(embedding_map = 'feature_representations')
+#RCoT
+seeds=1:20
+res <- rep(1, 20)
+for(seed in seeds){
+  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
+  res[seed] <- DNCIT(features_tucker, Y, Z=EHR_mat, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+}
+print(median(res))
+```
+
+The `DNCIT()` function outputs the test statistic, p-value and runtime of the RCOT applied to the feature representations. Usually, we would choose a suitable (nonparametric) CIT before the application of the DNCIT, depending on the sample size, dimension of the feature representations as well as of the confounder and the computational costs. The p-value of `r median(res)` implies that the image does not necessarily contain significant additional information about the diagnosis, given all available EHRs. 
+
+### Information between image and diagnosis given non-image-derived EHRs
+
+The above result can have many reasons, one being that image-derived EHRs in $Z$ are produced through experts from the image. Thus, they can be seen as mediator, taking away the relevant information within the image for the diagnosis. We want to check for this and run the test in a next step only on the image and non-image-derived EHRs: 
+
+```{r Z without image-derived EHRs}
+EHR_non_img <- EHR_mat[, non_ultrasound, drop=FALSE]
+#RCoT
+seeds=1:20
+res <- rep(1, 20)
+for(seed in seeds){
+  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
+  res[seed] <- DNCIT(features_tucker, Y, Z=EHR_non_img, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+}
+median(res)
+```
+
+We observe that the median over the p-values is now lower. Particularly, at a significant level of $0.05$ the image now contains significant information on the diagnosis, after accounting for the non-image derived EHRs. 
+
+### Potential confounder of the image
+
+Next, we are interested in a somewhat different question. Often, it is advantageous to include less confounder for a CIT w.r.t. power, type 1 error and runtime. However, if relevant confounder, i.e. variables with causal effects on image and diagnosis, are not included, the CIT might reject the null hypothesis of conditional independence although the only association between image and the diagnosis is through the left-out confounder. 
+
+An example of a detailed confounder study for brain scans can be found in @alfaro2021confound. To check if a variable in the data may be a confounder and should be included in $Z$, it should be conditionally associated with the image, given all other confounders. We showcase this for the laboratory EHRs, given all general EHRs as well as for the clinical EHRs, given all general EHRs:
+```{r laboratory EHRs as confounder}
+EHR_lab <- EHR_mat[, lab, drop=FALSE]
+EHR_others <- EHR_mat[, others, drop=FALSE]
+EHR_clinical <- EHR_mat[, clinical, drop=FALSE]
+#RCoT
+#lab
+seeds=1:20
+res_lab_confound <- rep(1, 20)
+for(seed in seeds){
+  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
+  res_lab_confound[seed] <- DNCIT(features_tucker, Y=EHR_lab, Z=EHR_others, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+}
+#clinical
+seeds=1:20
+res_clinical_confound <- rep(1, 20)
+for(seed in seeds){
+  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
+  res_clinical_confound[seed] <- DNCIT(features_tucker, Y=EHR_clinical, Z=EHR_others, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+}
+cat('Median p-value laboratory EHRs: ', median(res_lab_confound), '\n',
+    'Median p-value clinical EHRs: ', median(res_clinical_confound), '\n')
+```
+
+## DNCIT applied to available feature representations
+
+This section discusses the scenario where feature representations of the images are already available. In our case, we take the expert-derived features from the images as available, low-dimensional feature representations consisting of the important information of the image for the diagnosis.
+
+### Information between image and diagnosis given all non-image EHRs
 
 ```{r DNCIT applied to feature representations}
-embedding_map_with_parameters <- list(embedding_map = 'feature_representations', data_loader = 'npz')
-#results <- matrix(NA, nrow=3, ncol=5, dimnames = list(c('Test Statistic', 'P-Value', 'Runtime'), c('RCOT', 'cpt_kpc', 'cmiknn', 'fcit', 'gcm')))
+Z_non_img <- EHR_mat[, non_ultrasound, drop=FALSE]
+X <- EHR_mat[, ultrasound, drop=FALSE]
+
+embedding_map_with_parameters <- 'feature_representations'
 #RCoT
-cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=12))
-res <- DNCIT(X, Y, Z, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)
-print(res)
+seeds=1:20
+res <- rep(1, 20)
+for(seed in seeds){
+  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
+  res[seed] <- DNCIT(X, Y, Z=Z_non_img, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+}
+median(res)
+```
+```{r alternative CITs, include=FALSE}
+#results <- matrix(NA, nrow=3, ncol=5, dimnames = list(c('Test Statistic', 'P-Value', 'Runtime'), c('RCOT', 'cpt_kpc', 'cmiknn', 'fcit', 'gcm')))
 #results[, 'RCOT'] <- c(res$Sta, res$p, res$runtime)
 #cpt_kpc
 #cit_with_parameters <- list(cit = 'cpt_kpc', params_cit = list(k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),  Knn=10, model.formula.YZ='V1~V2+V3'))
@@ -113,51 +220,6 @@ print(res)
 #results[, 'gcm'] <- c(res$Sta, res$p, res$runtime)
 ```
 
-The `DNCIT()` function outputs the test statistic, p-value and runtime of the (nonparametric) CIT applied to the feature representations. Usually, we would choose a suitable (nonparametric) CIT before the application of the DNCIT, depending on the sample size, dimension of the feature representations and confounder and the computational costs. 
-
-The results imply that the image does not contain significant additional information about the diagnosis, given all EHRs. 
-
-### Information between image and diagnosis given non-image-derived EHRs
-
-This can have many reasons, one being that many EHRs such as the Appendix_Diameter in $Z$ are derived through experts from the image. Thus, they can be seen as mediator, taking away the relevant information within the image for the diagnosis. We want to check for this and run the CITs in a next step only on the image and non-image-derived EHRs: 
-
-```{r Z without image-derived EHRs}
-Z_others <- c('Age', 'Sex', 'Height', 'Weight', 'BMI', 'Length_of_Stay')
-Z_scores <- c('Alvarado_Score', 'Paedriatic_Appendicitis_Score')
-Z_clinical <- c('Peritonitis', 'Migratory_Pain', 'Lower_Right_Abd_Pain', 'Contralateral_Rebound_Tenderness', 'Ipsilateral_Rebound_Tenderness', 'Coughing_Pain', 'Psoas_Sign', 'Nausea', 'Loss_of_Appetite', 'Body_Temperature', 'Dysuria', 'Stool')
-Z_lab <- c('WBC_Count', 'Neutrophil_Percentage', 'CRP', 'Ketones_in_Urine', 'RBC_in_Urine', 'WBC_in_Urine') 
-Z_ultrasound <- c('Appendix_on_US', 'Appendix_Diameter', 'Free_Fluids',  'Appendix_Wall_Layers', 'Target_Sign', 'Perfusion', 'Perforation', 'Surrounding_Tissue_Reaction', 'Pathological_Lymph_Nodes', 'Bowel_Wall_Thickening', 'Ileus', 'Coprostasis', 'Meteorism', 'Enteritis', 'Appendicular_Abscess', 'Conglomerate_of_Bowel_Loops', 'Gynecological_Findings')
-Z_non_ultrasound <- c(Z_lab[Z_lab %in% EHRs], Z_clinical[Z_clinical %in% EHRs], Z_scores[Z_scores %in% EHRs], Z_others[Z_others %in% EHRs])
-Z_non_US <- Z[, Z_non_ultrasound, drop=FALSE]
-Z_US <- Z[, Z_ultrasound[Z_ultrasound %in% EHRs], drop=FALSE]
-Z_demo <- Z[, Z_others[Z_others %in% EHRs], drop=FALSE]
-Z_age <- Z[, 'Age', drop=FALSE]
-Z_sex <- Z[, 'Sex', drop=FALSE]
-
-#RCoT
-seeds=1:20
-res <- rep(1, 20)
-for(seed in seeds){
-  cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
-  res[seed] <- DNCIT(X__, Y, Z=Z_non_US, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
-}
-median(res)
-```
-
-### Potential confounder of the image
-
-Next, we are interested in a somewhat different question. Often, it is advantageous to include less confounder for a CIT w.r.t. power, type 1 error and runtime. However, if relevant confounder, i.e. variables with causal effects on image and diagnosis, are not included, the CIT might reject the null hypothesis of conditional independence although the only association between image and diagnosis is through the confounder. 
-
-## DNCITs applied directly to images
-
-```{r image data}
-img_path <- paste(pediatric_data_path, 'ultrasonic_images/', sep='/')
-img_files <- list()
-for(id in names(meta_data)){
-  img_files[id] <- paste0(img_path, meta_data[id][[id]][[1]][1])
-}
-print(img_files[1:5])
-
-```
+## Interpretation
 
 ## References

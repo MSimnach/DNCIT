@@ -61,13 +61,13 @@ DNCIT <- function(X, Y, Z,
       }
     }else if (embedding_map == 'open_ai_clip' && data_loader == 'PIL'){
       if(is.null(embedding_map_with_parameters['params_open_ai_clip'])){
-        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
+        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path)
       }else{
-        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
+        X <- r_open_ai_clip(embedding_map_with_parameters, dir_path)
       }
     }else if(embedding_map == 'tucker_decomposition' && data_loader == 'png'){
       use_default <- is.null(embedding_map_with_parameters$'dim_reduced')
-      X <- ifelse(use_default, tucker_decomposition(imgs_dir_path=X), tucker_decomposition(embedding_map_with_parameters,imgs_dir_path=X))
+      X <- ifelse(use_default, tucker_decomposition(img_dir_path=dir_path), tucker_decomposition(embedding_map_with_parameters,img_dir_path=dir_path))
     }else{
       return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
     }
@@ -89,7 +89,7 @@ DNCIT <- function(X, Y, Z,
 
   # match row names of X, Y, Z
   if(is.null(row.names(X))){
-
+    #print('X, Y and Z are expected to have the same row order, since now rownames for matching were provided.')
   }else if(is.null(Z)){
     if(!(all(rownames(Y) %in% rownames(X))&& all(rownames(X) %in% rownames(Y)))){
       return("The row names of X and Y should consist of the same names to match ids.")
