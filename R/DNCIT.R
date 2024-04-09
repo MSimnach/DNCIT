@@ -65,6 +65,7 @@ DNCIT <- function(X, Y, Z,
         X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
       }
     }else if(embedding_map == 'tensor' && data_loader == 'png'){
+      imgs <-
       img <- png::readPNG(all_files)
     }else{
       return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
@@ -112,21 +113,21 @@ DNCIT <- function(X, Y, Z,
 
   ## apply nonparametric CIT
   if (cit == "RCOT") {
-    updated_parameters <- update_params(RCIT::RCoT, X,Y,Z, params_cit)
+    updated_parameters <- update_params_cits(RCIT::RCoT, X,Y,Z, params_cit)
 
     start_time <- timestamp()
     res <- do.call(RCIT::RCoT, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cpt_kpc'){
-    updated_parameters <- update_params(kpc_graph, X,Y,Z, params_cit)
+    updated_parameters <- update_params_cits(kpc_graph, X,Y,Z, params_cit)
 
     start_time <- timestamp()
     res <- do.call(kpc_graph, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cmiknn'){
-    updated_parameters <- update_params(cmiknn, X,Y,Z, params_cit)
+    updated_parameters <- update_params_cits(cmiknn, X,Y,Z, params_cit)
 
     start_time <- timestamp()
     res <- do.call(cmiknn, updated_parameters)
@@ -138,7 +139,7 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='gcm'){
-    updated_parameters <- update_params(GeneralisedCovarianceMeasure::gcm.test, X,Y,Z, params_cit)
+    updated_parameters <- update_params_cits(GeneralisedCovarianceMeasure::gcm.test, X,Y,Z, params_cit)
 
     start_time <- timestamp()
     res <- do.call(GeneralisedCovarianceMeasure::gcm.test, updated_parameters)
@@ -160,35 +161,3 @@ timestamp <- function(time = Sys.time()) {
  withr::local_timezone("UTC")
  return(time)
 }
-
-update_params <- function(cit.fct, X,Y,Z, new_params=list()){
-  default_parameters <- as.list(formals(cit.fct))
-
-  # Initialize a list to store valid new parameters
-  valid_new_parameters <- list()
-
-  # Iterate through new parameters, remove invalid ones, and print a warning
-  for (param_name in names(new_params)) {
-    if (param_name %in% names(default_parameters)) {
-      # Valid parameter, add to the list of valid parameters
-      valid_new_parameters[[param_name]] <- new_params[[param_name]]
-    } else {
-      # Invalid parameter, print a warning
-      warning(paste("Parameter", param_name, "is not a valid parameter of the", cit.fct, "function."))
-    }
-  }
-
-  updated_parameters <- utils::modifyList(default_parameters, valid_new_parameters)
-  if ('RCoT' %in% as.character(substitute(cit.fct))){
-    updated_parameters$x <- X
-    updated_parameters$y <- Y
-    updated_parameters$z <- Z
-  }else{
-    updated_parameters$X <- X
-    updated_parameters$Y <- Y
-    updated_parameters$Z <- Z
-  }
-  return(updated_parameters)
-}
-
-

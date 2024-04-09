@@ -2,6 +2,10 @@
 
 CMIknn <- NULL
 np <- NULL
+fcit <- NULL
+open_ai_clip <- NULL
+PIL_image <- NULL
+py_torch <- NULL
 
 .onLoad <- function(libname, pkgname) {
   if(!reticulate::virtualenv_exists('r-cits')){

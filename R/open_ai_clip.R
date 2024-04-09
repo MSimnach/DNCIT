@@ -1,13 +1,15 @@
 #' Open AI CLIP
 #'
 #' @param params_open_ai_clip Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)
-#' @param dir_path Path to the directory containing the images
-#' @param all_files List of all files in the directory
+#' @param img_dir_path Path to the directory containing the images
+#' @param img_file_names List of all files in the directory
 #'
 #' @return Feature representation of the image obtained by open ai model
 #' @export
-r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=dir_path, img_file_names=all_files){
-  progress_measure <- progressr::progressor(along = img_file_names)
+r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL, img_file_names=NULL){
+  if(requireNamespace("progressr", quietly = TRUE)){
+    progress_measure <- progressr::progressor(along = img_file_names)
+  }
   device <- ifelse(py_torch$cuda$is_available(), "cuda", "cpu")
 
   clip_model <- params_open_ai_clip$'clip_model'
@@ -39,7 +41,9 @@ r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=dir_path, img_
     feature_rep <- feature_rep$view(as.integer(-1))$detach()$numpy()
 
     X_list <- append(X_list, list(feature_rep))
-    progress_measure(message = sprintf("Adding %s", img_file_names[file]))
+    if(requireNamespace("progressr", quietly = TRUE)){
+      progress_measure(message = sprintf("Adding %s", img_file_names[file]))
+    }
   }
 
   X <- do.call(rbind, X_list)

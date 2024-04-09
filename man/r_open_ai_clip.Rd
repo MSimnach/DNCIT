@@ -6,16 +6,16 @@
 \usage{
 r_open_ai_clip(
   params_open_ai_clip = NULL,
-  dir_path = dir_path,
-  all_files = all_files
+  img_dir_path = NULL,
+  img_file_names = NULL
 )
 }
 \arguments{
 \item{params_open_ai_clip}{Specification which open ai clip model to use, default is (ViT-B-32, pretrained=laion2bs34bb79k)}
 
-\item{dir_path}{Path to the directory containing the images}
+\item{img_dir_path}{Path to the directory containing the images}
 
-\item{all_files}{List of all files in the directory}
+\item{img_file_names}{List of all files in the directory}
 }
 \value{
 Feature representation of the image obtained by open ai model
