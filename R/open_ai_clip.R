@@ -6,12 +6,14 @@
 #'
 #' @return Feature representation of the image obtained by open ai model
 #' @export
-r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL, img_file_names=NULL){
+r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL){
+  img_dir_path <- append_slash(img_dir_path)
+  img_file_names <- list.files(img_dir_path, full.names = TRUE)
   if(requireNamespace("progressr", quietly = TRUE)){
     progress_measure <- progressr::progressor(along = img_file_names)
   }
-  device <- ifelse(py_torch$cuda$is_available(), "cuda", "cpu")
 
+  device <- ifelse(py_torch$cuda$is_available(), "cuda", "cpu")
   clip_model <- params_open_ai_clip$'clip_model'
   pretrained_on <- params_open_ai_clip$'pretrained_on'
 
@@ -30,9 +32,8 @@ r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL, img_file
   preprocess <- model_and_preprocess[[3]]
 
   X_list <- list()
-  for (file in img_file_names){
-    file_path <- paste0(img_dir_path, file)
-    img <- PIL_image$open(file_path)
+  for (i in seq_along(img_file_names)){
+    img <- PIL_image$open(img_file_names[i])
 
     img_preprocessed <- preprocess(img)$unsqueeze(as.integer(0))
 
@@ -42,7 +43,7 @@ r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL, img_file
 
     X_list <- append(X_list, list(feature_rep))
     if(requireNamespace("progressr", quietly = TRUE)){
-      progress_measure(message = sprintf("Adding %s", img_file_names[file]))
+      progress_measure(message = sprintf("Adding %s", img_file_names[i]))
     }
   }
 

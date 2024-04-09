@@ -5,29 +5,35 @@
 #'
 #' @return X Feature representations of the images of dimension as vectorization of dim_reduced array
 #' @export
-tucker_decomposition <- function(params_tuckerD=list(dim_reduced = c(10,10)), img_dir_path=NULL){
-  if(requireNamespace("progressr", quietly = TRUE)){
-    progress_measure <- progressr::progressor(along = img_file_names)
-  }
-  img_dir_path <- append_slash(img_dir_path)
-  img_file_names <- list.files(img_dir_path, full.names = TRUE)
-
-  img_check_dim <- png::readPNG(img_file_names[1])
-  img_dim <-length(dim(img_check_dim))
-  n <- length(img_file_names)
-
-  imgs <- array(NA, dim=c(n, dim(img_check_dim)))
-  for (i in seq_along(img_file_names)){
-    if(img_dim == 2){
-      imgs[i,,] <- png::readPNG(img_file_names[i])
-    }else if(img_dim == 3){
-      imgs[i,,,] <- png::readPNG(img_file_names[i])
-    }else{
-      stop('tucker decomposition is currently only implemented for 2D and 3D images')
-    }
+tucker_decomposition <- function(params_tuckerD=list(dim_reduced = c(10,10)), img_dir_path=NULL, imgs_array=NULL){
+  if(is.null(imgs_array)){
+    img_dir_path <- append_slash(img_dir_path)
+    img_file_names <- list.files(img_dir_path, full.names = TRUE)
     if(requireNamespace("progressr", quietly = TRUE)){
-      progress_measure(message = sprintf("Adding %s", img_file_names[i]))
+      progress_measure <- progressr::progressor(along = img_file_names)
     }
+
+    img_check_dim <- png::readPNG(img_file_names[1])
+    img_dim <-length(dim(img_check_dim))
+    n <- length(img_file_names)
+
+    imgs <- array(NA, dim=c(n, dim(img_check_dim)))
+    for (i in seq_along(img_file_names)){
+      if(img_dim == 2){
+        imgs[i,,] <- png::readPNG(img_file_names[i])
+      }else if(img_dim == 3){
+        imgs[i,,,] <- png::readPNG(img_file_names[i])
+      }else{
+        stop('tucker decomposition is currently only implemented for 2D and 3D images')
+      }
+      if(requireNamespace("progressr", quietly = TRUE)){
+        progress_measure(message = sprintf("Adding %s", img_file_names[i]))
+      }
+    }
+  }else if(is.null(img_dir_path)){
+    imgs <- imgs_array
+  }else{
+    stop('Neither path to image directory nor images are given for Tucker decomposition.')
   }
 
   params_tuckerD$'tnsr' <- rTensor::as.tensor(imgs)

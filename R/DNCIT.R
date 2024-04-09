@@ -36,8 +36,9 @@ DNCIT <- function(X, Y, Z,
   #### Embedding map to obtain feature representations of X
   if (is.matrix(X) && ('feature_representations' %in% embedding_map_with_parameters)) {
     X <- X
-  }else if(is.matrix(X) && !(embedding_map_with_parameters == 'feature_representations')){
-
+  }else if(is.matrix(X) && ('tucker_decomposition' %in% embedding_map_with_parameters)){
+    use_default <- is.null(embedding_map_with_parameters$'dim_reduced')
+    X <- ifelse(use_default, tucker_decomposition(imgs_array=X), tucker_decomposition(embedding_map_with_parameters,imgs_array=X))
   }else if (is.character(X)){
     # Get a list of all files in the directory
     dir_path <- X
@@ -64,9 +65,9 @@ DNCIT <- function(X, Y, Z,
       }else{
         X <- r_open_ai_clip(embedding_map_with_parameters, dir_path, all_files)
       }
-    }else if(embedding_map == 'tensor' && data_loader == 'png'){
-      imgs <-
-      img <- png::readPNG(all_files)
+    }else if(embedding_map == 'tucker_decomposition' && data_loader == 'png'){
+      use_default <- is.null(embedding_map_with_parameters$'dim_reduced')
+      X <- ifelse(use_default, tucker_decomposition(imgs_dir_path=X), tucker_decomposition(embedding_map_with_parameters,imgs_dir_path=X))
     }else{
       return("X is a string (potentially directory with images) but embedding_map_with_parameters does not correspond to any implemented embedding map.")
     }
