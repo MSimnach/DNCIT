@@ -25,7 +25,7 @@ tucker_decomposition <- function(params_tuckerD=list(dim_reduced = c(10,10)), im
       }else if(img_dim == 3){
         imgs[i,,,] <- png::readPNG(img_file_names[i])
       }else{
-        stop('tucker decomposition is currently only implemented for 2D and 3D images')
+        stop('Tucker decomposition is currently only implemented for 2D and 3D images')
       }
       if(requireNamespace("progressr", quietly = TRUE)){
         progress_measure(message = sprintf("Adding %s", img_file_names[i]))

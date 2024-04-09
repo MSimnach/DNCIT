@@ -111,7 +111,7 @@ features_tucker_path <- paste(pediatric_data_path, 'features_tucker', 'features_
 #save(features_tucker, file = features_tucker_path)
 ```
 
-Throughout this article, we select the RCOT as CIT. We specify the CIT and its parameters in [cit_with_parameters], here by cit_with_parameters['cit']='RCOT' and cit_with_parameters['seed']=123, which is also the default option in `DNCIT()`. We take always the median of 20 runs of the RCOT, since the test is depending on a random seed.
+Usually, we would choose a suitable (nonparametric) CIT before the application of the DNCIT, depending on the sample size, dimension of the feature representations as well as of the confounder and the computational costs. Throughout this article, we select the RCOT from @strobl2019approximate as CIT. We specify the CIT and its parameters in [cit_with_parameters], here by cit_with_parameters['cit']='RCOT' and cit_with_parameters['seed']=123, which is also the default option in `DNCIT()`. We take always the median of 20 runs of the RCOT, since the test is depending on a random seed.
 
 ### Conditional association between image and diagnosis given all EHRs
 
@@ -120,22 +120,27 @@ First, we study if the image contains additional information about the diagnosis
 ```{r image data}
 # features are loaded as features_tucker
 load(features_tucker_path)
+#order rows of X according to Y and Z
+img_files <- list.files(img_path)
+ids_imgs <- gsub("(\\d+)\\..*", "\\1", img_files)
+row.names(features_tucker) <- ids_imgs
+
 embedding_map_with_parameters <- list(embedding_map = 'feature_representations')
 #RCoT
 seeds=1:20
 res <- rep(1, 20)
 for(seed in seeds){
   cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
-  res[seed] <- DNCIT(features_tucker, Y, Z=EHR_mat, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+  res[seed] <- DNCIT(features_tucker, Y, Z=EHR_mat,embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
 }
 print(median(res))
 ```
 
-The `DNCIT()` function outputs the test statistic, p-value and runtime of the RCOT applied to the feature representations. Usually, we would choose a suitable (nonparametric) CIT before the application of the DNCIT, depending on the sample size, dimension of the feature representations as well as of the confounder and the computational costs. The p-value of `r median(res)` implies that the image does not necessarily contain significant additional information about the diagnosis, given all available EHRs. 
+The `DNCIT()` function outputs the test statistic, p-value and runtime of the RCOT applied to the feature representations. The p-value of `r median(res)` implies that the image contains "weakly" significant additional information about the diagnosis, given all available EHRs. 
 
 ### Information between image and diagnosis given non-image-derived EHRs
 
-The above result can have many reasons, one being that image-derived EHRs in $Z$ are produced through experts from the image. Thus, they can be seen as mediator, taking away the relevant information within the image for the diagnosis. We want to check for this and run the test in a next step only on the image and non-image-derived EHRs: 
+The above result of a relatively high p-value can have many reasons, one being that image-derived EHRs in $Z$ are produced through experts from the image. Thus, they can be seen as mediator, taking away the relevant information within the image for the diagnosis. We want to check for this and run the test in a next step only on the image and non-image-derived EHRs: 
 
 ```{r Z without image-derived EHRs}
 EHR_non_img <- EHR_mat[, non_ultrasound, drop=FALSE]
@@ -149,13 +154,13 @@ for(seed in seeds){
 median(res)
 ```
 
-We observe that the median over the p-values is now lower. Particularly, at a significant level of $0.05$ the image now contains significant information on the diagnosis, after accounting for the non-image derived EHRs. 
+We observe that the median over the p-values is now lower. Particularly, at a significant level of $0.005$ the image now contains significant information on the diagnosis, after accounting for the non-image derived EHRs. 
 
 ### Potential confounder of the image
 
-Next, we are interested in a somewhat different question. Often, it is advantageous to include less confounder for a CIT w.r.t. power, type 1 error and runtime. However, if relevant confounder, i.e. variables with causal effects on image and diagnosis, are not included, the CIT might reject the null hypothesis of conditional independence although the only association between image and the diagnosis is through the left-out confounder. 
+Next, we are interested in a somewhat different question. Often, it is advantageous w.r.t. power, type 1 error and runtime to include less confounder for a CIT. However, if relevant confounder, i.e. variables with causal effects on image and diagnosis, are not included, the CIT might reject the null hypothesis of conditional independence although the only association between image and the diagnosis is through the left-out confounder. 
 
-An example of a detailed confounder study for brain scans can be found in @alfaro2021confound. To check if a variable in the data may be a confounder and should be included in $Z$, it should be conditionally associated with the image, given all other confounders. We showcase this for the laboratory EHRs, given all general EHRs as well as for the clinical EHRs, given all general EHRs:
+To check if a variable in the data may be a confounder and should be included in $Z$, it should be conditionally associated with the image, given all other confounder. We showcase this for the laboratory EHRs, given all general EHRs as well as for the clinical EHRs, given all general EHRs:
 ```{r laboratory EHRs as confounder}
 EHR_lab <- EHR_mat[, lab, drop=FALSE]
 EHR_others <- EHR_mat[, others, drop=FALSE]
@@ -176,18 +181,19 @@ for(seed in seeds){
   res_clinical_confound[seed] <- DNCIT(features_tucker, Y=EHR_clinical, Z=EHR_others, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
 }
 cat('Median p-value laboratory EHRs: ', median(res_lab_confound), '\n',
-    'Median p-value clinical EHRs: ', median(res_clinical_confound), '\n')
+    'Median p-value clinical EHRs: ', median(res_clinical_confound), '\n', sep="")
 ```
+Depending on the p-values, the set of clinical EHRs tend to be more relevant as confounder for the image, given the general EHRs, compared to the laboratory EHRs. While we would often rather test only for one of the clinical and laboratory EHRs at the same time, the example illustrates another interesting feature of the DNCITs: $Y$ does not necessarily have to be a scalar, as long as the implemented CITs allow for non-scalar $Y$ as the RCOT does.
 
 ## DNCIT applied to available feature representations
 
-This section discusses the scenario where feature representations of the images are already available. In our case, we take the expert-derived features from the images as available, low-dimensional feature representations consisting of the important information of the image for the diagnosis.
+This section discusses the scenario where feature representations of the images are already available. In our case, we use the expert-produced features from the images as low-dimensional feature representations, assuming they contain the important information of the image for the diagnosis.
 
 ### Information between image and diagnosis given all non-image EHRs
 
 ```{r DNCIT applied to feature representations}
-Z_non_img <- EHR_mat[, non_ultrasound, drop=FALSE]
-X <- EHR_mat[, ultrasound, drop=FALSE]
+EHR_non_img <- EHR_mat[, non_ultrasound, drop=FALSE]
+EHR_img <- EHR_mat[, ultrasound, drop=FALSE]
 
 embedding_map_with_parameters <- 'feature_representations'
 #RCoT
@@ -195,10 +201,12 @@ seeds=1:20
 res <- rep(1, 20)
 for(seed in seeds){
   cit_with_parameters <- list(cit = 'RCOT', params_cit = list(seed=seed))
-  res[seed] <- DNCIT(X, Y, Z=Z_non_img, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
+  res[seed] <- DNCIT(EHR_img, Y, Z=EHR_non_img, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)$p
 }
-median(res)
+print(median(res))
 ```
+
+We see, that the expert-produced feature representations of the images contain significant information about the diagnosis, given all non-image EHRs. This is in line with the result of the Tucker decomposition, given all non-image EHRs. 
 ```{r alternative CITs, include=FALSE}
 #results <- matrix(NA, nrow=3, ncol=5, dimnames = list(c('Test Statistic', 'P-Value', 'Runtime'), c('RCOT', 'cpt_kpc', 'cmiknn', 'fcit', 'gcm')))
 #results[, 'RCOT'] <- c(res$Sta, res$p, res$runtime)
@@ -219,7 +227,5 @@ median(res)
 #res <- DNCIT(X, Y, Z, embedding_map_with_parameters = embedding_map_with_parameters, cit_with_parameters = cit_with_parameters)
 #results[, 'gcm'] <- c(res$Sta, res$p, res$runtime)
 ```
-
-## Interpretation
 
 ## References

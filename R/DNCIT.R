@@ -94,18 +94,17 @@ DNCIT <- function(X, Y, Z,
     if(!(all(rownames(Y) %in% rownames(X))&& all(rownames(X) %in% rownames(Y)))){
       return("The row names of X and Y should consist of the same names to match ids.")
     }else{
-      order_Y <- match(rownames(X), rownames(Y))
-      Y <- Y[order_Y, , drop = FALSE]
+      order_X <- rownames(X)
+      Y <- Y[order_X, , drop = FALSE]
     }
   }else if(!(all(rownames(X) %in% rownames(Y)) && all(rownames(X) %in% rownames(Z)) &&
             all(rownames(Y) %in% rownames(X)) && all(rownames(Y) %in% rownames(Z)) &&
             all(rownames(Z) %in% rownames(X)) && all(rownames(Z) %in% rownames(Y)))){
     return("The row names of X, Y, and Z should consist of the same names to match ids.")
   }else{
-    order_Y <- match(rownames(X), rownames(Y))
-    order_Z <- match(rownames(X), rownames(Z))
-    Y <- Y[order_Y, , drop = FALSE]
-    Z <- Z[order_Z, , drop = FALSE]
+    order_X <- rownames(X)
+    Y <- Y[order_X, , drop = FALSE]
+    Z <- Z[order_X, , drop = FALSE]
   }
 
   # load cit and parameters
