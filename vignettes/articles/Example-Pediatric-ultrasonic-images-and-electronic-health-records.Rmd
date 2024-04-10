@@ -37,7 +37,7 @@ if (requireNamespace("fs")){
 
 ### Preprocessing 
 
-In our example, the tabular data is saved as a python dictionary, which can be loaded into R as a list:
+You can skip this section, if you are not interested in the data preprocessing. In our example, the tabular data is saved as a python dictionary, which can be loaded into R as a list:
 
 
 ```{r meta data}
