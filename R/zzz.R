@@ -10,6 +10,9 @@ py_torch <- NULL
 .onLoad <- function(libname, pkgname) {
   if(!reticulate::virtualenv_exists('r-cits')){
     reticulate::virtualenv_create(envname="r-cits", version="<=3.10")
+    if(!reticulate::py_module_available('virtualenv')){
+      reticulate::py_install('virtualenv', envname='r-cits', pip=TRUE, python_version = "<=3.10")
+    }
     reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
     reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
     reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
