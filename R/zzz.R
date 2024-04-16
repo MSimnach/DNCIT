@@ -18,6 +18,9 @@ py_torch <- NULL
       reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
       reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
     }, error = function(e) {
+      if(reticulate::virtualenv_exists('r-cits')){
+        reticulate::virtualenv_remove('r-cits')
+      }
       # If virtualenv fails, attempt conda
       cat("virtualenv-create failed. Attempting conda_install...\n")
       reticulate::conda_create(envname="r-cits", version="<=3.10")
@@ -28,29 +31,43 @@ py_torch <- NULL
     })
   }
 
-  # if(!reticulate::condaenv_exists('r-cits')){
-  #   if(!reticulate::virtualenv_exists('r-cits')){
-  #     reticulate::virtualenv_create(envname="r-cits", version="<=3.10")
-  #     reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
-  #     reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
-  #     reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
-  #     reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
-  #     startup::restart_r(quiet=TRUE)
-  #   }
-  # }
   if(reticulate::virtualenv_exists('r-cits')){
     reticulate::use_virtualenv("r-cits", required = FALSE)
   }else if(reticulate::condaenv_exists('r-cits')){
     reticulate::use_condaenv("r-cits", required = FALSE)
   }else{
-    stop("No python environment found. Please install r-cits environment.")
+    stop("No python environment 'r-cits' found. Please install r-cits environment.")
   }
 
   # use superassignment to update global reference to python modules/packages
-  CMIknn <<- reticulate::import("tigramite.independence_tests.cmiknn", delay_load = TRUE)
-  np <<- reticulate::import('numpy', delay_load = TRUE)
-  fcit <<- reticulate::import('fcit', delay_load = TRUE)
-  open_ai_clip <<- reticulate::import('open_clip', delay_load = TRUE)
-  PIL_image <<- reticulate::import('PIL.Image', delay_load = TRUE)
-  py_torch <<- reticulate::import('torch', delay_load = TRUE)
+  if(reticulate::py_module_available('tigramite')){
+    CMIknn <<- reticulate::import("tigramite.independence_tests.cmiknn", delay_load = TRUE)
+  }else{
+    message('tigramite not found. If you would like to use the CMIknn, please install the tigramite package.')
+  }
+  if(reticulate::py_module_available('numpy')){
+    np <<- reticulate::import('numpy', delay_load = TRUE)
+  }else{
+    message('numpy not found. If you would like to use the numpy, please install the numpy package.')
+  }
+  if(reticulate::py_module_available('fcit')){
+    fcit <<- reticulate::import('fcit', delay_load = TRUE)
+  }else{
+    message('fcit not found. If you would like to use the fcit, please install the fcit package.')
+  }
+  if(reticulate::py_module_available('open_clip')){
+    open_ai_clip <<- reticulate::import('open_clip', delay_load = TRUE)
+  }else{
+    message('open_clip not found. If you would like to use the open_clip, please install the open_clip package.')
+  }
+  if(reticulate::py_module_available('PIL.Image')){
+    PIL_Image <<- reticulate::import('PIL.Image', delay_load = TRUE)
+  }else{
+    message('PIL.Image not found. If you would like to use the PIL.Image, please install the PIL.Image or teh open_clip package.')
+  }
+  if(reticulate::py_module_available('PIL.Image')){
+    py_torch <<- reticulate::import('torch', delay_load = TRUE)
+  }else{
+    message('py_torch not found. If you would like to use the py_torch, please install the py_torch or teh open_clip package.')
+  }
 }
