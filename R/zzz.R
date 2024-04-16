@@ -17,6 +17,10 @@ py_torch <- NULL
     reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
     reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
     reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
+    if(requireNamespace('startup', quietly = TRUE)){
+      install.packages('startup')
+    }
+    startup::restart_r(quiet=TRUE)
   }
   reticulate::use_virtualenv("r-cits", required = FALSE)
 
