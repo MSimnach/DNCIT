@@ -6,6 +6,10 @@
 #' @return Feature representation of the image obtained by open ai model
 #' @export
 r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL){
+  if(!reticulate::py_module_available('open_clip')){
+    stop("open_clip not found. Please install the open_clip package in your python environment. You can find help regarding the installion in `vignette(Installation)`.")
+  }
+
   img_dir_path <- append_slash(img_dir_path)
   img_file_names <- list.files(img_dir_path, full.names = TRUE)
   if(requireNamespace("progressr", quietly = TRUE)){

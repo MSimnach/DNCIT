@@ -20,8 +20,8 @@
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' cmiknn(X, Y, Z)
 cmiknn <- function(X,Y,Z, knn=0.15, shuffle_neighbors=5, sig_samples=500, transform="ranks") {
-  if(!('tigramite' %in% reticulate::py_list_packages()$'package')){
-    stop('The reticulate environment that you use does not have the tigramite package installed. Please install it first in the environment accessed by reticulate.')
+  if(!reticulate::py_module_available('tigramite')){
+    stop("tigramite not found. Please install the tigramite package in your python environment. You can find help regarding the installion in `vignette(Installation)`.")
   }
 
   if(knn<1){

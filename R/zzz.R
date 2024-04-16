@@ -43,31 +43,31 @@ py_torch <- NULL
   if(reticulate::py_module_available('tigramite')){
     CMIknn <<- reticulate::import("tigramite.independence_tests.cmiknn", delay_load = TRUE)
   }else{
-    message('tigramite not found. If you would like to use the CMIknn, please install the tigramite package.')
+    packageStartupMessage('tigramite not found. If you would like to use the CMIknn, please install the tigramite package.')
   }
   if(reticulate::py_module_available('numpy')){
     np <<- reticulate::import('numpy', delay_load = TRUE)
   }else{
-    message('numpy not found. If you would like to use the numpy, please install the numpy package.')
+    packageStartupMessage('numpy not found. If you would like to use the numpy, please install the numpy package.')
   }
   if(reticulate::py_module_available('fcit')){
     fcit <<- reticulate::import('fcit', delay_load = TRUE)
   }else{
-    message('fcit not found. If you would like to use the fcit, please install the fcit package.')
+    packageStartupMessage('fcit not found. If you would like to use the fcit, please install the fcit package.')
   }
   if(reticulate::py_module_available('open_clip')){
     open_ai_clip <<- reticulate::import('open_clip', delay_load = TRUE)
   }else{
-    message('open_clip not found. If you would like to use the open_clip, please install the open_clip package.')
+    packageStartupMessage('open_clip not found. If you would like to use the open_clip, please install the open_clip package.')
   }
   if(reticulate::py_module_available('PIL.Image')){
     PIL_Image <<- reticulate::import('PIL.Image', delay_load = TRUE)
   }else{
-    message('PIL.Image not found. If you would like to use the PIL.Image, please install the PIL.Image or teh open_clip package.')
+    packageStartupMessage('PIL.Image not found. If you would like to use the PIL.Image, please install the PIL.Image or teh open_clip package.')
   }
   if(reticulate::py_module_available('PIL.Image')){
     py_torch <<- reticulate::import('torch', delay_load = TRUE)
   }else{
-    message('py_torch not found. If you would like to use the py_torch, please install the py_torch or teh open_clip package.')
+    packageStartupMessage('py_torch not found. If you would like to use the py_torch, please install the py_torch or teh open_clip package.')
   }
 }

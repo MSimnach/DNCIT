@@ -8,7 +8,7 @@
 #' @export
 r_fcit <- function(X,Y,Z){
   if(!reticulate::py_module_available('fcit')){
-    stop("fcit not found. Please install the fcit package in your python environment. You can find help regarding the installion in `vignette(Installation)`")
+    stop("fcit not found. Please install the fcit package in your python environment. You can find help regarding the installion in `vignette(Installation)`.")
   }
   res <- list()
   res$p <- fcit$fcit$test(X, Y, Z)
