@@ -22,7 +22,7 @@ py_torch <- NULL
         reticulate::virtualenv_remove('r-cits')
       }
       # If virtualenv fails, attempt conda
-      cat("virtualenv-create failed. Attempting conda_install...\n")
+      packageStartupMessage("virtualenv-create failed. Attempting conda_install...\n")
       reticulate::conda_create(envname="r-cits", version="<=3.10")
       reticulate::conda_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
       reticulate::conda_install(packages = "scikit_learn", envname = 'r-cits', pip=TRUE)
