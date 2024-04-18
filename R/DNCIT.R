@@ -150,6 +150,25 @@ DNCIT <- function(X, Y, Z,
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='wald'){
+    colnames(X) <- paste0('X',1:ncol(X))
+    colnames(Y) <- paste0('Y',1:ncol(Y))
+    colnames(Z) <- paste0('Z',1:ncol(Z))
+    if(!is.null(params_cit)){
+      lm_formula <- params_cit$'lm_formula'
+      lm_model <- lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
+    }else if(is.null(params_cit$'lm_model')){
+      lm_formula <- as.formula(paste(colnames(Y), "~ ."))
+      lm_model <- lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
+    }else{
+      lm_model <- params_cit$'lm_model'
+    }
+
+    start_time <- timestamp()
+    wtest <- lmtest::waldtest(lm_model, colnames(X))
+    end_time <- timestamp()
+    res <- list(p = wtest$`Pr(>F)`[2], Sta = wtest$F[2])
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }else{
     return("The specified CIT is not implemented.")
   }

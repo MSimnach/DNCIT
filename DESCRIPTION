@@ -16,6 +16,7 @@ BugReports: https://github.com/MSimnach/DNCIT/issues
 Imports: 
     GeneralisedCovarianceMeasure,
     KPC,
+    lmtest,
     mgcv,
     png,
     RCIT (>= 0.1.0),
