@@ -156,10 +156,10 @@ DNCIT <- function(X, Y, Z,
     colnames(Z) <- paste0('Z',1:ncol(Z))
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
-      lm_model <- lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
+      lm_model <- stats::lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
     }else if(is.null(params_cit$'lm_model')){
-      lm_formula <- as.formula(paste(colnames(Y), "~ ."))
-      lm_model <- lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
+      lm_formula <- stats::as.formula(paste(colnames(Y), "~ ."))
+      lm_model <- stats::lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
     }else{
       lm_model <- params_cit$'lm_model'
     }
