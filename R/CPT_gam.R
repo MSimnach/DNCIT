@@ -48,7 +48,7 @@ cpt_gam <- function(Y, Z, model.formula.YZ, M, nstep){
   #conditional mean and variance via gam for y_i|z_i
   colnames(YZ) <- paste('V', 1:ncol(YZ), sep='')
   gam_formula <- stats::formula(model.formula.YZ)
-  gam.XYZ <- mgcv::gam(gam_formula, data = as.data.frame(YZ))
+  gam.XYZ <- mgcv::gam(gam_formula, data = as.data.frame(YZ), method='REML')
   gam.mean <- gam.XYZ$fit
   gam.var <- mgcv::predict.gam(gam.XYZ, se.fit=TRUE)$se.fit
   #CPT Y
