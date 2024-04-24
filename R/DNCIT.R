@@ -151,13 +151,13 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='wald'){
-    colnames(X) <- paste0('X',1:ncol(X))
-    colnames(Y) <- paste0('Y',1:ncol(Y))
-    colnames(Z) <- paste0('Z',1:ncol(Z))
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
       lm_model <- stats::lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
     }else if(is.null(params_cit$'lm_model')){
+      colnames(X) <- paste0('X',1:ncol(X))
+      colnames(Y) <- paste0('Y',1:ncol(Y))
+      colnames(Z) <- paste0('Z',1:ncol(Z))
       lm_formula <- stats::as.formula(paste(colnames(Y), "~ ."))
       lm_model <- stats::lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
     }else{
