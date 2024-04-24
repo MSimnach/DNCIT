@@ -157,6 +157,9 @@ DNCIT <- function(X, Y, Z,
     if(is.null(colnames(X))){
       colnames(X) <- paste0('X',1:ncol(X))
     }
+    if(is.null(colnames(Z))){
+      colnames(Z) <- paste0('Z',1:ncol(Z))
+    }
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
       lm_model <- stats::lm(lm_formula, as.data.frame(cbind(X, Y,Z)))
