@@ -166,7 +166,11 @@ DNCIT <- function(X, Y, Z,
     }
 
     updated_parameters <- update_params_cits(cpi::cpi, X,Y,Z,params_cit)[1:13]
-    do.call(cpi::cpi, updated_parameters)
+    start_time <- timestamp()
+    cpitest <- do.call(cpi::cpi, updated_parameters)
+    end_time <- timestamp()
+    res <- list(p = cpitest$p.value, Sta = cpitest$CPI)
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='wald'){
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
