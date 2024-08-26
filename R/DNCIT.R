@@ -157,7 +157,7 @@ DNCIT <- function(X, Y, Z,
     # default task, learner and measure
     if(is.null(params_cit)){
       tsk_yxz <-  mlr3::as_task_regr(yxz, target = "V1")
-      lrn_ranger <- mlr3::lrn("regr.ranger")
+      lrn_ranger <- mlr3learners::lrn("regr.ranger")
       measure <- mlr3::msrs("regr.mse")
       resampling <- mlr3::rsmp("cv", folds = 5)
 
