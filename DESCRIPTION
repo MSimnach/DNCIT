@@ -14,6 +14,7 @@ RoxygenNote: 7.3.1
 URL: https://github.com/MSimnach/DNCIT
 BugReports: https://github.com/MSimnach/DNCIT/issues
 Imports: 
+    cpi,
     GeneralisedCovarianceMeasure,
     KPC,
     lmtest,
@@ -31,6 +32,8 @@ Suggests:
     fs,
     kernlab,
     knitr,
+    mlr3,
+    mlr3learners,
     progressr,
     rmarkdown,
     testthat (>= 3.0.0)
