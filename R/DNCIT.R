@@ -150,6 +150,23 @@ DNCIT <- function(X, Y, Z,
     res$reject <- NULL
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='cpi'){
+    yxz <- do.call(cbind, list(Y,X,Z))
+    colnames(yxz) <- paste0("V", 1:ncol(yxz))
+
+    # default task, learner and measure
+    if(is.null(params_cit)){
+      tsk_yxz <-  as_task_regr(yxz, target = "V1")
+      lrn_ranger <- lrn("regr.ranger")
+      measure = msrs("regr.mse")
+      resampling = rsmp("cv", folds = 5)
+
+      params_cit <- list(task = tsk_yxz, learner = lrn_ranger,
+                         resampling = resampling, groups = list(X = 2:(ncol(X)+1)))
+    }
+
+    updated_parameters <- update_params_cits(cpi::cpi, X,Y,Z,params_cit)[1:13]
+    do.call(cpi::cpi, updated_parameters)
   }else if(cit=='wald'){
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
