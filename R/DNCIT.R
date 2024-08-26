@@ -156,10 +156,10 @@ DNCIT <- function(X, Y, Z,
 
     # default task, learner and measure
     if(is.null(params_cit)){
-      tsk_yxz <-  as_task_regr(yxz, target = "V1")
-      lrn_ranger <- lrn("regr.ranger")
-      measure = msrs("regr.mse")
-      resampling = rsmp("cv", folds = 5)
+      tsk_yxz <-  mlr3::as_task_regr(yxz, target = "V1")
+      lrn_ranger <- mlr3::lrn("regr.ranger")
+      measure <- mlr3::msrs("regr.mse")
+      resampling <- mlr3::rsmp("cv", folds = 5)
 
       params_cit <- list(task = tsk_yxz, learner = lrn_ranger,
                          resampling = resampling, groups = list(X = 2:(ncol(X)+1)))
