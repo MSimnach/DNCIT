@@ -19,32 +19,29 @@ pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
   yxz <- do.call(cbind, list(Y,X,Z))
   colnames(yxz) <- paste0("V", 1:ncol(yxz))
 
-  tsk_yxz <-  as_task_regr(yxz, target = "V1")
-  measure <- msr("regr.mse")
-  rsmp_inner <- rsmp("cv", folds = 5)
-  rsmp_outer <- rsmp("cv", folds = 3)
-  learner <- mlr3tuningspaces::lts(lrn("regr.ranger"))
+  tsk_yxz <-  mlr3::as_task_regr(yxz, target = "V1")
+  measure <- mlr3::msr("regr.mse")
+  rsmp_inner <- mlr3::rsmp("cv", folds = 5)
+  rsmp_outer <- mlr3::rsmp("cv", folds = 3)
+  learner <- mlr3tuningspaces::lts(mlr3::lrn("regr.ranger"))
 
-  at_yxz <- auto_tuner(
-    tuner = tnr("random_search"),
+  at_yxz <- mlr3tuning::auto_tuner(
+    tuner = mlr3tuning::tnr("random_search"),
     learner = learner,
     resampling = rsmp_inner,
     measure = measure,
     term_time = term_time_at
   )
 
-  rr_yxz <- resample(tsk_yxz, at_yxz, rsmp_outer)
-
-
-  gen_error_estimate_yxz <- rr_yxz$aggregate()
+  rr_yxz <- mlr3::resample(tsk_yxz, at_yxz, rsmp_outer)
 
   ## learn y from z
   yz <- do.call(cbind, list(Y,Z))
   colnames(yz) <- paste0("V", 1:ncol(yz))
 
-  tsk_yz <-  as_task_regr(yz, target = "V1")
+  tsk_yz <-  mlr3::as_task_regr(yz, target = "V1")
   #same folds as for y on xz
-  rsmp_custom = rsmp("custom")
+  rsmp_custom = mlr3::rsmp("custom")
   rr_resampling_yxz <- rr_yxz$resampling$instance
   test_splits <- list()
   train_splits <- list()
@@ -57,15 +54,15 @@ pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
                           test = test_splits
   )
 
-  at_yz <- auto_tuner(
-    tuner = tnr("random_search"),
+  at_yz <- mlr3tuning::auto_tuner(
+    tuner = mlr3tuning::tnr("random_search"),
     learner = learner,
     resampling = rsmp_inner,
     measure = measure,
     term_time = term_time_at
   )
 
-  rr_yz <- resample(tsk_yz, at_yz, rsmp_custom)
+  rr_yz <- mlr3::resample(tsk_yz, at_yz, rsmp_custom)
 
   ## residuals from predictions
   preds_yxz <- rr_yxz$prediction()
