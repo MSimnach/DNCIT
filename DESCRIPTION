@@ -34,6 +34,8 @@ Suggests:
     knitr,
     mlr3,
     mlr3learners,
+    mlr3tuning,
+    mlr3tuningspaces,
     progressr,
     rmarkdown,
     testthat (>= 3.0.0)
