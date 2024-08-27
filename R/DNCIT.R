@@ -171,6 +171,13 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res <- list(p = cpitest$p.value, Sta = cpitest$CPI)
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='pred_cit'){
+    updated_parameters <- update_params_cits(pred_cit, X,Y,Z, params_cit)
+
+    start_time <- timestamp()
+    res <- do.call(pred_cit, updated_parameters)
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='wald'){
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'
