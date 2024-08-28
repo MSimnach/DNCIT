@@ -23,7 +23,7 @@ pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
   measure <- mlr3::msr("regr.mse")
   rsmp_inner <- mlr3::rsmp("cv", folds = 5)
   rsmp_outer <- mlr3::rsmp("cv", folds = 3)
-  learner <- mlr3tuningspaces::lts(mlr3::lrn("regr.ranger"))
+  learner <- mlr3tuningspaces::lts(mlr3::lrn("regr.ranger", verbose = FALSE))
 
   at_yxz <- mlr3tuning::auto_tuner(
     tuner = mlr3tuning::tnr("random_search"),
