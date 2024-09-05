@@ -178,6 +178,34 @@ DNCIT <- function(X, Y, Z,
     res <- do.call(pred_cit, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='comets'){
+    if('gcm' %in% params_cit){
+      params_cit$method <- NULL
+      # 1:11 since we remove optional arguments ..., otherwise do.call throws an error
+      updated_parameters <- update_params_cits(comets::gcm, X,Y,Z, params_cit)[1:11]
+
+      start_time <- timestamp()
+      res <- do.call(comets::gcm, updated_parameters)
+      res[['p']] <- res[['p.value']]
+      res[['Sta']] <- res[['statistic']]
+      res[['p.value']] <- NULL
+      res[['statistic']] <- NULL
+      res$reject <- NULL
+      end_time <- timestamp()
+      res$runtime <- difftime(end_time, start_time, units = "secs")
+    }else{
+      updated_parameters <- update_params_cits(comets::pcm, X,Y,Z, params_cit)
+
+      start_time <- timestamp()
+      res <- do.call(comets::pcm, updated_parameters)
+      res[['p']] <- res[['p.value']]
+      res[['Sta']] <- res[['statistic']]
+      res[['p.value']] <- NULL
+      res[['statistic']] <- NULL
+      res$reject <- NULL
+      end_time <- timestamp()
+      res$runtime <- difftime(end_time, start_time, units = "secs")
+    }
   }else if(cit=='wald'){
     if(!is.null(params_cit)){
       lm_formula <- params_cit$'lm_formula'

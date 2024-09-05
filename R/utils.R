@@ -41,7 +41,7 @@ update_params_cits <- function(fct, X,Y,Z, new_params=list()){
       valid_new_parameters[[param_name]] <- new_params[[param_name]]
     } else {
       # Invalid parameter, print a warning
-      warning(paste("Parameter", param_name, "is not a valid parameter of the", fct, "function."))
+      warning(paste("Parameter", param_name, "is not a valid parameter"))
     }
   }
 
