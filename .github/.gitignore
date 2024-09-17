@@ -1,3 +1,4 @@
 *.html
-inst/extdata/
+inst/extdata
 vignettes/articles/
+inst/
