@@ -25,3 +25,10 @@ Prediction based CIT with mlr3 and random forest
 Auto tuner for hyperparameter optimization
 Nested resampling for performance estimation
 }
+\examples{
+n <- 20; p <- 10; q <- 2
+X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+Y <- matrix(rnorm(n), nrow = n)
+Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
+pred_cit(X, Y, Z, term_time = 1)
+}

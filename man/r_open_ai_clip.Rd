@@ -17,3 +17,9 @@ Feature representation of the image obtained by open ai model
 \description{
 Open AI CLIP
 }
+\examples{
+\dontshow{if (reticulate::py_module_available('open_clip') && requireNamespace("fs") && reticulate::py_module_available('PIL.image')) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+path_emp_result_plot <- fs::path_package("extdata/emp_results_plots/", package = "DNCIT")
+r_open_ai_clip(img_dir_path = path_emp_result_plot)
+\dontshow{\}) # examplesIf}
+}

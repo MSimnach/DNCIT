@@ -65,11 +65,11 @@ py_torch <- NULL
     packageStartupMessage('open_clip not found. If you would like to use the open_clip, please install the open_clip package.')
   }
   if(reticulate::py_module_available('PIL.Image')){
-    PIL_Image <<- reticulate::import('PIL.Image', delay_load = TRUE)
+    PIL_image <<- reticulate::import('PIL.Image', delay_load = TRUE)
   }else{
     packageStartupMessage('PIL.Image not found. If you would like to use the PIL.Image, please install the PIL.Image or teh open_clip package.')
   }
-  if(reticulate::py_module_available('PIL.Image')){
+  if(reticulate::py_module_available('torch')){
     py_torch <<- reticulate::import('torch', delay_load = TRUE)
   }else{
     packageStartupMessage('py_torch not found. If you would like to use the py_torch, please install the py_torch or teh open_clip package.')

@@ -23,3 +23,7 @@ X Feature representations of the images of dimension as vectorization of dim_red
 \description{
 Tucker decomposition
 }
+\examples{
+X <- array(data=rnorm(1000), dim=c(10,10,10))
+tucker_decomposition(params_tuckerD=list(dim_reduced = c(2,2)),imgs_array=X)
+}

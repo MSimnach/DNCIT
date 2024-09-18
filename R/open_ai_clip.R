@@ -5,6 +5,10 @@
 #'
 #' @return Feature representation of the image obtained by open ai model
 #' @export
+#'
+#' @examplesIf reticulate::py_module_available('open_clip') && requireNamespace("fs") && reticulate::py_module_available('PIL.image')
+#' path_emp_result_plot <- fs::path_package("extdata/emp_results_plots/", package = "DNCIT")
+#' r_open_ai_clip(img_dir_path = path_emp_result_plot)
 r_open_ai_clip <- function(params_open_ai_clip=NULL, img_dir_path=NULL){
   if(!reticulate::py_module_available('open_clip')){
     stop("open_clip not found. Please install the open_clip package in your python environment. You can find help regarding the installion in `vignette(Installation)`.")

@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#' library(mlr3learners)
 #' n <- 20; p <- 10; q <- 2
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)

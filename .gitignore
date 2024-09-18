@@ -6,4 +6,4 @@
 .quarto
 #inst/doc
 vignettes/articles/
-inst/extdata/
+inst/extdata/example_pediatric_patients

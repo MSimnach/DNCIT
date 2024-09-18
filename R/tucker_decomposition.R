@@ -6,6 +6,10 @@
 #'
 #' @return X Feature representations of the images of dimension as vectorization of dim_reduced array
 #' @export
+#'
+#' @examples
+#' X <- array(data=rnorm(1000), dim=c(10,10,10))
+#' tucker_decomposition(params_tuckerD=list(dim_reduced = c(2,2)),imgs_array=X)
 tucker_decomposition <- function(params_tuckerD=list(dim_reduced = c(10,10)), img_dir_path=NULL, imgs_array=NULL){
   if(is.null(imgs_array)){
     img_dir_path <- append_slash(img_dir_path)
@@ -33,6 +37,7 @@ tucker_decomposition <- function(params_tuckerD=list(dim_reduced = c(10,10)), im
     }
   }else if(is.null(img_dir_path)){
     imgs <- imgs_array
+    n <- dim(imgs)[1]
   }else{
     stop('Neither path to image directory nor images are given for Tucker decomposition.')
   }
