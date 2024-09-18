@@ -14,6 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(DNCIT)
-```
+As described in the [README](../README.md), the package is installed together with a Python virtual environment 'r-cits' when following the installation instructions and setting `options(dncit_with_python_env = TRUE)`. The virtual environment contains CITs and embedding maps, which are originally installed in Python.
+
+However, by default, and without setting `options(dncit_with_python_env = TRUE)`, the package can be installed without the Python virtual environment. In this case, the Python CITs and embedding maps are not available but can be installed manually.
+
+The use of `reticulate` can be error-prone. A common issue in connection with our package is that `reticulate` fixes a Python configuration when it is first used. Thus, when loading the `reticulate` package first and afterward the `DNCIT` package, the former might not use the Python environment 'r-cits,' which was created explicitly for the latter. To avoid this issue, we recommend restarting the R session and trying to load the `DNCIT` package first. If the error persists, it can also be helpful to check the Python configuration with `reticulate::py_config()`.
+
+If you encounter additional issues, please refer to the [reticulate documentation](https://rstudio.github.io/reticulate/) or open an issue here.
+
