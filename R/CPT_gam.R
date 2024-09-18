@@ -1,4 +1,7 @@
-#CPT (Berrett)
+#Conditional permutation test based on
+# Berrett, T. B., Wang, Y., Barber, R. F., & Samworth, R. J. (2020).
+# The conditional permutation test for independence while controlling for confounders.
+# Journal of the Royal Statistical Society Series B: Statistical Methodology, 82(1), 175-197.
 generate_X_CPT_gaussian = function(nstep,M,X0,mu,sig2){
   # Runs the conditional permutation test using the distribution X | Z=Z[i] ~ N(mu[i],sig2[i])
   log_lik_mat = -(X0^2)%*%t(1/2/sig2) + X0%*%t(mu/sig2)
