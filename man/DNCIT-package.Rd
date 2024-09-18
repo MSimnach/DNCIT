@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Marco Simnacher \email{marco.simnacher@hu-berlin.de}
+\strong{Maintainer}: Marco Simnacher \email{marco.simnacher@hu-berlin.de} [copyright holder, funder]
 
 }
 \keyword{internal}

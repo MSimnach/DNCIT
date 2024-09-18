@@ -13,7 +13,7 @@
 #' @return list of p-value and the conditional mutual information of X,Y given Z
 #' @export
 #'
-#' @examples
+#' @examplesIf reticulate::py_module_available('tigramite')
 #' n <- 20; p <- 10; q <- 2
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)

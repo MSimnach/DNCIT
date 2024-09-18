@@ -19,3 +19,12 @@ list of p-value and -1 as test statistic, because the FCIT does not return a tes
 \description{
 Fast conditional independence test
 }
+\examples{
+\dontshow{if (reticulate::py_module_available('fcit')) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+n <- 20; p <- 10; q <- 2
+X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+Y <- matrix(rnorm(n), nrow = n)
+Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
+r_fcit(X, Y, Z)
+\dontshow{\}) # examplesIf}
+}

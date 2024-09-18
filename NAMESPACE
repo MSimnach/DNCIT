@@ -3,6 +3,7 @@
 export(DNCIT)
 export(cmiknn)
 export(kpc_graph)
+export(pred_cit)
 export(r_fcit)
 export(r_open_ai_clip)
 export(tucker_decomposition)

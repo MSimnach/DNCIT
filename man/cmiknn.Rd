@@ -36,9 +36,11 @@ list of p-value and the conditional mutual information of X,Y given Z
 Conditional independence test (CIT) based on the conditional mutual information (CMI) with k-nearest-neighbors (k-NN) estimation
 }
 \examples{
+\dontshow{if (reticulate::py_module_available('tigramite')) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 n <- 20; p <- 10; q <- 2
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 Y <- matrix(rnorm(n), nrow = n)
 Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 cmiknn(X, Y, Z)
+\dontshow{\}) # examplesIf}
 }

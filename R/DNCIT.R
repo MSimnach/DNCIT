@@ -1,7 +1,7 @@
 ### DNCIT
 #' Conditional Independence Test for images and scalars, given vector-valued confounders
 #'
-#' Deep nonparametric conditional Independence Test (CIT) (DNCIT) consisting of a wrapper for
+#' Deep nonparametric conditional Independence Test (CIT) (DNCIT) consisting of a modular framework for
 #' (nonparametric) CITs applied to feature representations of images and scalars, given confounders,
 #' and embedding maps applied to the images to obtain feature representations.
 #'
@@ -9,9 +9,7 @@
 #' If no embedding map is specified, X should be a matrix of feature representations of the images.
 #'
 #' The function allows you to specify a CIT from a list of CITs. The default is the Randomized Correlation
-#' Test (RCOT) since it performed best in the paper. However, a recommendation based on the sample size
-#' and the feature representation dimension is given in the console before performing the CIT.
-#'
+#' Test (RCOT) since it performed best for sample sizes above 1100 in the paper.
 #'
 #' @param X A nxp-matrix of n p-dimensional (vectorized) images or a feature representation of the images
 #' @param Y A nx1-matrix of n univariate target variables

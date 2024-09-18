@@ -11,6 +11,11 @@
 #' @export
 #'
 #' @examples
+#' n <- 20; p <- 10; q <- 2
+#' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+#' Y <- matrix(rnorm(n), nrow = n)
+#' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
+#' pred_cit(X, Y, Z, term_time = 1)
 pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
   # termination time for auto tuner
   term_time_at <- term_time
