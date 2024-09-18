@@ -8,37 +8,39 @@ PIL_image <- NULL
 py_torch <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  # py_packages <- c("tigramite", "scikit_learn", "fcit", "open_clip_torch")
+  # Check if the R option "dncit_with_python_env" is set to TRUE
+  setup_python_env <- getOption("dncit_with_python_env", FALSE)  # Default to FALSE
 
-  if(!(reticulate::virtualenv_exists('r-cits') || reticulate::condaenv_exists('r-cits'))){
-    tryCatch({
-      reticulate::virtualenv_create(envname="r-cits", version="<=3.10", packages="numpy<1.24")
-      reticulate::py_install(packages = c("llvmlite==0.39.1","numba==0.56.4"), envname = 'r-cits', pip=TRUE)
-      reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
-      reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
-      reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
-      reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
-    }, error = function(e) {
-      if(reticulate::virtualenv_exists('r-cits')){
-        reticulate::virtualenv_remove('r-cits')
-      }
-      # If virtualenv fails, attempt conda
-      packageStartupMessage("virtualenv-create failed. Attempting conda_install...\n")
-      reticulate::conda_create(envname="r-cits", version="<=3.10", packages="numpy<1.24")
-      reticulate::py_install(packages = "numba==0.56.4", envname = 'r-cits', pip=TRUE)
-      reticulate::conda_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
-      reticulate::conda_install(packages = "scikit_learn", envname = 'r-cits', pip=TRUE)
-      reticulate::conda_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
-      reticulate::conda_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
-    })
+  if (setup_python_env) {
+    if(!(reticulate::virtualenv_exists('r-cits') || reticulate::condaenv_exists('r-cits'))){
+      tryCatch({
+        reticulate::virtualenv_create(envname="r-cits", version="<=3.10", packages="numpy<1.24")
+        reticulate::py_install(packages = c("llvmlite==0.39.1","numba==0.56.4"), envname = 'r-cits', pip=TRUE)
+        reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
+        reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
+        reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
+        reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
+      }, error = function(e) {
+        if(reticulate::virtualenv_exists('r-cits')){
+          reticulate::virtualenv_remove('r-cits')
+        }
+        # If virtualenv fails, attempt conda
+        packageStartupMessage("virtualenv-create failed. Attempting conda_install...\n")
+        reticulate::conda_create(envname="r-cits", version="<=3.10", packages="numpy<1.24")
+        reticulate::py_install(packages = c("llvmlite==0.39.1","numba==0.56.4"), envname = 'r-cits', pip=TRUE)
+        reticulate::conda_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
+        reticulate::conda_install(packages = "scikit_learn", envname = 'r-cits', pip=TRUE)
+        reticulate::conda_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
+        reticulate::conda_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
+      })
+    }
   }
-
   if(reticulate::virtualenv_exists('r-cits')){
     reticulate::use_virtualenv("r-cits", required = FALSE)
   }else if(reticulate::condaenv_exists('r-cits')){
     reticulate::use_condaenv("r-cits", required = FALSE)
   }else{
-    stop("No python environment 'r-cits' found. Please install r-cits environment.")
+    packageStartupMessage("No python environment 'r-cits' found. Either install r-cits environment or be aware that you are using a different python environment.")
   }
 
   # use superassignment to update global reference to python modules/packages
