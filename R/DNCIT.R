@@ -182,8 +182,10 @@ DNCIT <- function(X, Y, Z,
     }
     updated_parameters <- update_params_cits(ccit$CCIT$CCIT, X,Y,Z, params_cit)
 
+    res <- list()
     start_time <- timestamp()
-    res <- do.call(ccit$CCIT$CCIT, updated_parameters)
+    res[['p']] <- do.call(ccit$CCIT$CCIT, updated_parameters)
+    res[['Sta']] <- -1
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='comets'){
