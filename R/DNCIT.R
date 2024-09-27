@@ -176,6 +176,16 @@ DNCIT <- function(X, Y, Z,
     res <- do.call(pred_cit, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='ccit'){
+    if(is.null(params_cit$colsample_bytrees)){
+      params_cit$colsample_bytrees <- list(0.8)
+    }
+    updated_parameters <- update_params_cits(ccit$CCIT$CCIT, X,Y,Z, params_cit)
+
+    start_time <- timestamp()
+    res <- do.call(ccit$CCIT$CCIT, updated_parameters)
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='comets'){
     if('gcm' %in% params_cit){
       params_cit$method <- NULL
