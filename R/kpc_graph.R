@@ -22,6 +22,7 @@
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
 #' if(requireNamespace("kernlab", quietly = TRUE)){
+#'   withr::local_package("kernlab")
 #'   kpc_graph(X, Y, Z, k=kernlab::rbfdot(1/(2 * stats::median(stats::dist(Y))^2)),
 #'   Knn = 1, model.formula.YZ='V1~V2+V3')
 #' }

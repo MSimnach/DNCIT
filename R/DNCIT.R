@@ -21,8 +21,9 @@
 #' @export
 #'
 #' @examples
-#' if (!requireNamespace("RCIT", quietly = TRUE) && requireNamespace("momentchi2", quietly = TRUE)) {
+#' if (requireNamespace("RCIT", quietly = TRUE) && requireNamespace("momentchi2", quietly = TRUE)) {
 #'   withr::local_package("momentchi2")
+#'   withr::local_package("RCIT")
 #'   n <- 100; p <- 10; q <- 2
 #'   X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #'   Y <- matrix(rnorm(n), nrow = n)
