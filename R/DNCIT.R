@@ -18,7 +18,6 @@
 #' @param cit_with_parameters The cit and its parameters applied to the feature representations, Y and Z. Default is "RCOT"
 #'
 #' @return list of p-value, test statistic and runtime
-#' @import momentchi2
 #' @export
 #'
 #' @examples

@@ -33,6 +33,7 @@ Suggests:
     mlr3learners,
     mlr3tuning,
     mlr3tuningspaces,
+    momentchi2,
     progressr,
     RCIT (>= 0.1.0),
     rmarkdown,
