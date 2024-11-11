@@ -26,6 +26,7 @@ You can install the development version of DNCIT from
 [GitHub](https://github.com/) with:
 
 ``` r
+options(dncit_with_python_env = TRUE)
 # install.packages("devtools")
 devtools::install_github("MSimnach/DNCIT")
 ```
@@ -35,10 +36,12 @@ A more detailed instruction on the installation can be found in
 originally implemented in python, the corresponding modules have to be
 installed in a virtual environment. Therefore, a virtual environment for
 the python-based CITs is automatically created when loading the package
-for the first time, if there exists no virtual environment called
-´r-cits´. The virtual environment is created with the following
-packages: tigramite, scikit_learn, fcit, open_clip. If you want to use
-other python-based CITs and embedding maps, you can install them in the
-virtual environment with the following command:
-reticulate::py_install(packages = “package”, envname = ‘r-cits’). You
-can find more to the virtual environment setup in `zzz.R`.
+for the first time (by options(dncit_with_python_env = TRUE)), if there
+exists no virtual environment called ´r-cits´. The virtual environment
+is created with the following packages: tigramite, scikit_learn, fcit,
+open_clip. If you want to use other python-based CITs and embedding
+maps, you can install them in the virtual environment with the following
+command: reticulate::py_install(packages = “package”, envname =
+‘r-cits’). If setting up a virtual environment is not possible, the
+installation will try to set up a Conda environment. You can find more
+to the environment setup in `zzz.R`.

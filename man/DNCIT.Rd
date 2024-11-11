@@ -39,12 +39,12 @@ The function allows you to specify a CIT from a list of CITs. The default is the
 Test (RCOT) since it performed best for sample sizes above 1100 in the paper.
 }
 \examples{
-library(momentchi2)
-n <- 100; p <- 10; q <- 2
-X <- matrix(rnorm(n*p), nrow = n, ncol = p)
-Y <- matrix(rnorm(n), nrow = n)
-Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-if (!requireNamespace("RCIT", quietly = TRUE)) {
-    res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
+if (!requireNamespace("RCIT", quietly = TRUE) && requireNamespace("momentchi2", quietly = TRUE)) {
+  withr::local_package("momentchi2")
+  n <- 100; p <- 10; q <- 2
+  X <- matrix(rnorm(n*p), nrow = n, ncol = p)
+  Y <- matrix(rnorm(n), nrow = n)
+  Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
+  res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
 }
 }
