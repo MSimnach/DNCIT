@@ -189,23 +189,23 @@ DNCIT <- function(X, Y, Z,
     res <- do.call(pred_cit, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
-  }else if(cit=='ccit'){
-    if(!reticulate::py_module_available('ccit')){
-      stop("ccit not found. Please install the ccit package in your python environment. You can find help regarding the installion in `vignette(Installation)`.",
-           call. = FALSE
-      )
-    }
-    if(is.null(params_cit$colsample_bytrees)){
-      params_cit$colsample_bytrees <- list(0.8)
-    }
-    updated_parameters <- update_params_cits(ccit$CCIT$CCIT, X,Y,Z, params_cit)
+  #}else if(cit=='ccit'){
+  #  if(!reticulate::py_module_available('ccit')){
+  #    stop("ccit not found. Please install the ccit package in your python environment. You can find help regarding the installion in `vignette(Installation)`.",
+  #         call. = FALSE
+  #    )
+  #  }
+  #  if(is.null(params_cit$colsample_bytrees)){
+  #    params_cit$colsample_bytrees <- list(0.8)
+  #  }
+  #  updated_parameters <- update_params_cits(ccit$CCIT$CCIT, X,Y,Z, params_cit)
 
-    res <- list()
-    start_time <- timestamp()
-    res[['p']] <- do.call(ccit$CCIT$CCIT, updated_parameters)
-    res[['Sta']] <- -1
-    end_time <- timestamp()
-    res$runtime <- difftime(end_time, start_time, units = "secs")
+  #  res <- list()
+  #  start_time <- timestamp()
+  #  res[['p']] <- do.call(ccit$CCIT$CCIT, updated_parameters)
+  #  res[['Sta']] <- -1
+  #  end_time <- timestamp()
+  #  res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='comets'){
     if (!requireNamespace("comets", quietly = TRUE)) {
       stop(

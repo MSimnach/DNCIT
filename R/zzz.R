@@ -20,7 +20,7 @@ py_torch <- NULL
         reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
         reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
         reticulate::py_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
-        reticulate::py_install(packages = "CCIT==0.4", envname = 'r-cits',pip=TRUE)
+        #reticulate::py_install(packages = "CCIT==0.4", envname = 'r-cits',pip=TRUE)
       }, error = function(e) {
         if(reticulate::virtualenv_exists('r-cits')){
           reticulate::virtualenv_remove('r-cits')
@@ -33,7 +33,7 @@ py_torch <- NULL
         reticulate::conda_install(packages = "scikit_learn", envname = 'r-cits', pip=TRUE)
         reticulate::conda_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
         reticulate::conda_install(packages = "open_clip_torch", envname = 'r-cits',pip=TRUE)
-        reticulate::py_install(packages = "CCIT==0.4", envname = 'r-cits',pip=TRUE)
+        #reticulate::py_install(packages = "CCIT==0.4", envname = 'r-cits',pip=TRUE)
       })
     }
   }
@@ -76,9 +76,9 @@ py_torch <- NULL
   }else{
     packageStartupMessage('py_torch not found. If you would like to use the py_torch, please install the py_torch or the open_clip package.')
   }
-  if(reticulate::py_module_available('CCIT')){
-    ccit <<- reticulate::import('CCIT', delay_load = TRUE)
-  }else{
-    packageStartupMessage('CCIT not found. If you would like to use the CCIT, please install the CCIT.')
-  }
+  #if(reticulate::py_module_available('CCIT')){
+  #  ccit <<- reticulate::import('CCIT', delay_load = TRUE)
+  #}else{
+  #  packageStartupMessage('CCIT not found. If you would like to use the CCIT, please install the CCIT.')
+  #}
 }
