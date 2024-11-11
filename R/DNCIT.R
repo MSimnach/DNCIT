@@ -27,7 +27,9 @@
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-#' res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
+#' if (!requireNamespace("RCIT", quietly = TRUE)) {
+#'     res <- DNCIT(X, Y, Z, embedding_map_with_parameters = 'feature_representations')
+#' }
 DNCIT <- function(X, Y, Z,
                   embedding_map_with_parameters = 'feature_representations',
                   cit_with_parameters = list(cit = 'RCOT', params_cit = list(seed=123))) {
@@ -111,6 +113,12 @@ DNCIT <- function(X, Y, Z,
 
   ## apply nonparametric CIT
   if (cit == "RCOT") {
+    if (!requireNamespace("RCIT", quietly = TRUE)) {
+      stop(
+        "Package \"RCIT\" must be installed to use this function.",
+        call. = FALSE
+      )
+    }
     updated_parameters <- update_params_cits(RCIT::RCoT, X,Y,Z, params_cit)
 
     start_time <- timestamp()
@@ -149,6 +157,12 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cpi'){
+    if (!requireNamespace("cpi", quietly = TRUE)) {
+      stop(
+        "Package \"cpi\" must be installed to use this function.",
+        call. = FALSE
+      )
+    }
     yxz <- do.call(cbind, list(Y,X,Z))
     colnames(yxz) <- paste0("V", 1:ncol(yxz))
 
@@ -192,6 +206,12 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='comets'){
+    if (!requireNamespace("comets", quietly = TRUE)) {
+      stop(
+        "Package \"comets\" must be installed to use this function.",
+        call. = FALSE
+      )
+    }
     if('gcm' %in% params_cit){
       params_cit$method <- NULL
       # 1:11 since we remove optional arguments ..., otherwise do.call throws an error
