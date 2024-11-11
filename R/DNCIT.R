@@ -177,6 +177,9 @@ DNCIT <- function(X, Y, Z,
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='ccit'){
+    if(!reticulate::py_module_available('ccit')){
+      stop("ccit not found. Please install the ccit package in your python environment. You can find help regarding the installion in `vignette(Installation)`.")
+    }
     if(is.null(params_cit$colsample_bytrees)){
       params_cit$colsample_bytrees <- list(0.8)
     }
