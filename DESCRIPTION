@@ -7,7 +7,7 @@ Description: Modular framework for a conditional independence test (CIT)
             based on a user-given embedding map of the image and the application of
             existing nonparametric CITs to the feature representation 
             of the image and a scalar, given vector-valued c onfounders. 
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
