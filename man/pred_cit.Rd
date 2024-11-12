@@ -27,9 +27,9 @@ Nested resampling for performance estimation
 }
 \examples{
 library(mlr3learners)
-n <- 20; p <- 1; q <- 1
+n <- 200; p <- 1; q <- 1
 X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 Y <- matrix(rnorm(n), nrow = n)
 Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-pred_cit(X, Y, Z, term_time = 1)
+pred_cit(X, Y, Z, term_time = 0.1)
 }
