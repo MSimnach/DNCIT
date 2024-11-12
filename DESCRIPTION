@@ -1,6 +1,6 @@
 Package: DNCIT
 Title: Deep Nonparametric Conditional Independence Test for Images
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Marco", "Simnacher", , "marco.simnacher@hu-berlin.de", role = c("aut", "cre", "cph", "fnd"))
 Description: Modular framework for a conditional independence test (CIT)
