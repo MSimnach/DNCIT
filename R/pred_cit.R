@@ -16,7 +16,7 @@
 #' X <- matrix(rnorm(n*p), nrow = n, ncol = p)
 #' Y <- matrix(rnorm(n), nrow = n)
 #' Z <- matrix(rnorm(n*q), nrow = n, ncol = q)
-#' pred_cit(X, Y, Z, term_time = 0.1)
+#' pred_cit(X, Y, Z, term_time = 1)
 pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
   # termination time for auto tuner
   term_time_at <- term_time
@@ -30,8 +30,8 @@ pred_cit <- function(X,Y,Z, term_time = round(exp(4)/3)){
 
   tsk_yz <-  mlr3::as_task_regr(yz, target = "V1")
   #same folds as for y on xz
-  rsmp_inner <- mlr3::rsmp("cv", folds = 5)
-  rsmp_outer <- mlr3::rsmp("cv", folds = 3)
+  rsmp_inner <- mlr3::rsmp("cv", folds = 2)
+  rsmp_outer <- mlr3::rsmp("cv", folds = 2)
 
   at_yz <- mlr3tuning::auto_tuner(
     tuner = tuner,
