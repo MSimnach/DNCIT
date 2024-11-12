@@ -15,7 +15,7 @@ py_torch <- NULL
     if(!(reticulate::virtualenv_exists('r-cits') || reticulate::condaenv_exists('r-cits'))){
       tryCatch({
         reticulate::virtualenv_create(envname="r-cits", version="<=3.10", packages="numpy<1.24")
-        reticulate::py_install(packages = c("llvmlite==0.39.1","numba==0.56.4"), envname = 'r-cits', pip = FALSE)
+        reticulate::py_install(packages = c("llvmlite==0.39.1","numba==0.56.4"), envname = 'r-cits', pip = TRUE, pip_options = "--only-binary=:all:")
         reticulate::py_install(packages = "tigramite", envname = 'r-cits', pip=TRUE)
         reticulate::py_install(packages = "scikit_learn", envname = 'r-cits')
         reticulate::py_install(packages = "fcit", envname = 'r-cits',pip=TRUE, pip_options=c("--no-deps"))
