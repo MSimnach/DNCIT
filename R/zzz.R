@@ -9,7 +9,7 @@ py_torch <- NULL
 
 .onLoad <- function(libname, pkgname) {
   # Check if the R option "dncit_with_python_env" is set to TRUE
-  setup_python_env <- getOption("dncit_with_python_env", FALSE)  # Default to FALSE
+  setup_python_env <- getOption("dncit_with_python_env", TRUE)  # Default to FALSE
 
   if (setup_python_env) {
     if(!(reticulate::virtualenv_exists('r-cits') || reticulate::condaenv_exists('r-cits'))){
