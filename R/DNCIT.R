@@ -132,6 +132,13 @@ DNCIT <- function(X, Y, Z,
     res <- do.call(kpc_graph, updated_parameters)
     end_time <- timestamp()
     res$runtime <- difftime(end_time, start_time, units = "secs")
+  }else if(cit=='cpt_dcor'){
+    updated_parameters <- update_params_cits(dcor_cpt, X,Y,Z, params_cit)
+
+    start_time <- timestamp()
+    res <- do.call(dcor_cpt, updated_parameters)
+    end_time <- timestamp()
+    res$runtime <- difftime(end_time, start_time, units = "secs")
   }else if(cit=='cmiknn'){
     updated_parameters <- update_params_cits(cmiknn, X,Y,Z, params_cit)
 
