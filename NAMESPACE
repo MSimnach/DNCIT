@@ -2,6 +2,7 @@
 
 export(DNCIT)
 export(cmiknn)
+export(dcor_cpt)
 export(kpc_graph)
 export(pred_cit)
 export(r_fcit)

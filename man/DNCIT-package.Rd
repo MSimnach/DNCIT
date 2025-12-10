@@ -5,7 +5,7 @@
 \alias{DNCIT-package}
 \title{DNCIT: Deep Nonparametric Conditional Independence Test for Images}
 \description{
-Modular framework for a conditional independence test (CIT) based on a user-given embedding map of the image and the application of existing nonparametric CITs to the feature representation of the image and a scalar, given vector-valued c onfounders.
+Modular framework for a conditional independence test (CIT) based on a user-given embedding map of the image and the application of existing nonparametric CITs to the feature representation of the image and a scalar, given vector-valued confounders.
 }
 \seealso{
 Useful links:
